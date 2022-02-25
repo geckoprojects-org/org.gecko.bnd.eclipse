@@ -1,0 +1,17 @@
+-includeresource: \
+	binaries/cocoa/macosx/x86_64
+
+Bundle-SymbolicName: org.gecko.bnd.equinox.executable.macosx;type=equinox.executable
+
+-includeresource.base: \
+	@${repo;org.eclipse.equinox.launcher.cocoa.macosx.x86_64;latest}!/eclipse_*.so
+
+Provide-Capability:\
+    equinox.launcher; \
+        osgi.native.osname:List<String>="MacOSX,Mac OS X,macosx"; \
+        osgi.native.processor:List<String>="x86-64,amd64,em64t,x86_64";\
+        type=executable,\
+    equinox.launcher; \
+        osgi.native.osname:List<String>="MacOSX,Mac OS X,macosx"; \
+        osgi.native.processor:List<String>="x86-64,amd64,em64t,x86_64";\
+        type=lib

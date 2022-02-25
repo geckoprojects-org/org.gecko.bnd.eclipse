@@ -1,0 +1,35 @@
+-buildpath: \
+	osgi.core;version='7.0.0',\
+	osgi.cmpn;version='7.0.0',\
+	slf4j.api;version=latest,\
+	aQute.libg;version=latest,\
+	biz.aQute.bnd;version=latest,\
+	biz.aQute.launcher;version=latest,\
+	org.eclipse.equinox.launcher;version=latest,\
+	org.eclipse.equinox.p2.publisher.eclipse;version=latest,\
+	org.gecko.bnd.eclipse.launcher.pre;version=project,\
+	org.gecko.eclipse.api;version=project
+
+-buildpath+: biz.aQute.launcher;maven-version=1
+
+-testpath: \
+	${junit},\
+	biz.aQute.bndlib
+
+-builderignore: testresources
+-sub: *.bnd
+
+-conditionalpackage: \
+	org.eclipse.equinox.internal.p2.*,\
+	org.eclipse.pde.internal.*,\
+	aQute.lib*,\
+
+-includepackage: \
+	aQute.launcher,\
+	aQute.launcher.constants,\
+	aQute.launcher.minifw,\
+	aQute.launcher.plugin	
+	
+-bundleannotations: org.gecko*
+
+-require-bnd: "(version>=${bndbaseversion})"

@@ -1,0 +1,102 @@
+java: java
+javac: javac
+javac.source: 1.8
+javac.target: 1.8
+javac.debug:  on
+
+bnd-eclipse-version: ${base-version}-SNAPSHOT
+
+# This is the version of JUnit that will be used at build time and runtime
+junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
+# This is the version of Mockito that will be used at build time and run time
+mockito: org.mockito.mockito-core;version="[1.9,4)",\
+  org.objenesis;version="[2.1,4)"
+assertj: assertj-core;version="[3.20,4)"
+
+# Set Git revision information in the manifests of built bundles
+#Git-Descriptor:           ${system-allow-fail;git describe --dirty --always}
+Git-SHA:                  ${system-allow-fail;git rev-list -1 HEAD}
+git_url: 				  ${system-allow-fail;git config --get remote.origin.url}
+git_url_web: 			  ${subst;${git_url};.git}
+
+Bundle-License: Eclipse Public License 2.0
+Bundle-Copyright:Data In Motion GmbH all rights reserved
+Bundle-Vendor: Data In Motion GmbH
+Bundle-ContactAddress: info@data-in-motion.biz
+Bundle-DocURL: https://gitlab.com/gecko.io/geckoBNDEquinox
+Bundle-SCM: url=https://gitlab.com/gecko.io/geckoBNDEquinox, \
+	connection=scm:git:https://gitlab.com/gecko.io/geckoBNDEquinox.git, \
+	developerConnection=scm:git:git@gitlab.com:gecko.io/geckoBNDEquinox.git
+Bundle-Developers: \
+    jalbert; \
+        email="j.albert@data-in-motion.biz"; \
+        name="Juergen Albert"; \
+        organization="Data In Motion"; \
+        organizationUrl="https://www.datainmotion.de"; \
+        roles="architect,developer", \
+    mhoffmann; \
+        name="Mark Hoffmann"; \
+        email="m.hoffmann@data-in-motion.biz"; \
+        organization="Data In Motion"; \
+        organizationUrl="https://www.datainmotion.de"; \
+        roles="developer,architect"
+Bundle-Version: ${bnd-eclipse-version}
+
+# Includes sources from bundle
+-sources: true
+
+-includeresource.license: \
+	META-INF/LICENSE=${workspace}/cnf/license/LICENSE
+
+-removeheaders: Bnd-LastModified, Tool, Created-By
+
+-plugin.baseline: \
+	aQute.bnd.repository.osgi.OSGiRepository;\
+		name=Baseline;\
+		readonly = true;\
+		max.stale=-1;\
+		locations=https://devel.data-in-motion.biz/repository/gecko/release/geckoBNDEquinox/index.xml;\
+		cache=${build}/cache/Baseline
+
+-maven-release: pom
+-pom: true
+-digest: sha256
+
+-groupid: org.geckoprojects.bnd
+
+-releaserepo: Release, DIM_Release
+
+# Enable semantic versioning for all bundles
+#-baselinerepo: Baseline
+#-baseline: *
+
+# Ignore files for baselining
+-diffignore: *.xml,\
+	*/pom.properties,\
+	 Git-SHA,\
+	 Bundle-Vendor,\
+	 Bundle-License,\
+	 Bundle-DocURL,\
+	 Bundle-SCM,\
+	 Bundle-Developers,\
+	 Bundle-Copyright,\
+	 Bundle-ContactAddress,\
+	 OSGI-OPT/*
+
+# define global blacklist
+-runblacklist.default: osgi.identity;filter:='(osgi.identity=osgi.cmpn)'
+
+-resolve.effective: active
+#-resolve.effective: active;skip:="osgi.service"
+
+# > Java 8 runtime
+#modules: --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/java.security=ALL-UNNAMED
+#-runvm.default: ${if;${isempty;${system_allow_fail;java --list-modules}};;${modules}}
+
+-include: ${if;${def;release.dir};\
+              ${workspace}/cnf/releng/release.bnd;\
+              ${workspace}/cnf/releng/snapshot.bnd\
+          },\
+		  ${if;${env;GNUPG_PASSPHRASE};\
+              ${workspace}/cnf/releng/central.bnd\
+          }

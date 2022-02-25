@@ -1,0 +1,15 @@
+bndbaseversion: 6.2.0
+
+bndversion: ${if;${def;release.dir};\
+              ${bndbaseversion};\
+              ${bndbaseversion}-SNAPSHOT\
+          }
+
+-plugin.bnd: \
+	aQute.bnd.repository.maven.provider.MavenBndRepository;\
+		releaseUrl=https://bndtools.jfrog.io/bndtools/update-latest/;\
+		snapshotUrl=https://bndtools.jfrog.io/bndtools/update-snapshot/;\
+		index=${.}/bndtools.maven;\
+		poll_timeout=-1;\
+		name='BND Tools'
+		

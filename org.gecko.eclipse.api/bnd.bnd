@@ -1,0 +1,4 @@
+-buildpath: \
+  osgi.annotation; version=7.0.0
+Bundle-Name: Gecko Eclipse API
+Bundle-Description: Gecko Eclipse general API

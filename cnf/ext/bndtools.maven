@@ -1,0 +1,10 @@
+# Bndtools
+biz.aQute.bnd:aQute.libg:${bndversion}
+biz.aQute.bnd:biz.aQute.bnd.annotation:${bndversion}
+biz.aQute.bnd:biz.aQute.bnd.exporters:${bndversion}
+biz.aQute.bnd:biz.aQute.bndlib:${bndversion}
+biz.aQute.bnd:biz.aQute.junit:${bndversion}
+biz.aQute.bnd:biz.aQute.launcher:${bndversion}
+biz.aQute.bnd:biz.aQute.repository:${bndversion}
+biz.aQute.bnd:biz.aQute.resolve:${bndversion}
+biz.aQute.bnd:biz.aQute.bnd:${bndversion}

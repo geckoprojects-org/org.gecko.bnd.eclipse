@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmi:id="_6wlLcMgZEeSyMNYR5xypkQ" elementId="{{eclipse.product.id}}.application">
+  <children xsi:type="basic:TrimmedWindow" xmi:id="_6wlLccgZEeSyMNYR5xypkQ" elementId="{{eclipse.product.id}}.window.main" label="Example" x="100" y="100" width="2200" height="1200">
+    <children xsi:type="advanced:PerspectiveStack" xmi:id="_-qf4YObXEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.perspectivestack.0">
+      <children xsi:type="advanced:Perspective" xmi:id="_BtmdAObYEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.perspective" label="Example">
+        <children xsi:type="basic:PartSashContainer" xmi:id="_5sWEsObJEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.partsashcontainer.0" horizontal="true">
+          <children xsi:type="basic:PartSashContainer" xmi:id="_6wlLksgZEeSyMNYR5xypkQ" elementId="{{eclipse.product.id}}.partsashcontainer.sample" containerData="4000">
+            <children xsi:type="basic:PartStack" xmi:id="_h60eUObLEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.partstack.ul"/>
+            <children xsi:type="basic:PartStack" xmi:id="_6wlLk8gZEeSyMNYR5xypkQ" elementId="{{eclipse.product.id}}.partstack.bl"/>
+          </children>
+          <children xsi:type="basic:PartSashContainer" xmi:id="_9nFb8ObJEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.partsashcontainer.1" containerData="20000" horizontal="true">
+            <children xsi:type="basic:PartStack" xmi:id="_gacQsObLEemr0uDCb_wXgQ" elementId="{{eclipse.product.id}}.partstack.r"/>
+          </children>
+        </children>
+      </children>
+    </children>
+  </children>
+</application:Application>

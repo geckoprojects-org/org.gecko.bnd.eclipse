@@ -1,0 +1,24 @@
+-includeresource: \
+	binaries/gtk/linux/x86_64
+
+Bundle-SymbolicName: org.gecko.bnd.equinox.executable.linux;type=equinox.executable
+
+-includeresource.base: \
+	@${repo;org.eclipse.equinox.launcher.gtk.linux.x86_64;latest}!/eclipse_*.so
+
+Provide-Capability:\
+    equinox.launcher; \
+        osgi.native.osname:List<String>="Linux"; \
+        osgi.native.processor:List<String>="x86-64,amd64,em64t,x86_64";\
+        type=executable,\
+    equinox.launcher; \
+        osgi.native.osname:List<String>="Linux"; \
+        osgi.native.processor:List<String>="x86-64,amd64,em64t,x86_64";\
+        type=lib
+        
+Executable-Name: launcher
+Executable-Path: launcher
+
+Equinox-Lib: eclipse_11600.so
+Bundle-Name: Gecko Bnd Eclipse Launcher Linux
+Bundle-Description: Gecko Bnd Eclipse Launcher Linux x86_64

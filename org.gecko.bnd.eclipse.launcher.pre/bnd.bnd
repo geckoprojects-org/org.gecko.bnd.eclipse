@@ -1,0 +1,20 @@
+-buildpath: \
+	osgi.core;version='7.0.0',\
+	osgi.annotation;version='7.0.0',\
+	slf4j.api;version=latest,\
+	aQute.libg;version=latest,\
+	biz.aQute.bnd;version=latest,\
+	biz.aQute.bndlib;version=latest,\
+	org.eclipse.equinox.launcher;version=latest,\
+	org.gecko.eclipse.api;version=project
+
+-testpath: \
+	${junit},\
+	${assertj}
+
+-includeresource.base: \
+	@${repo;org.eclipse.equinox.launcher;latest}!/org/eclipse/equinox/launcher/JNIBridge.class
+	
+Main-Class: org.gecko.bnd.eclipse.launcher.pre.EclipseStyleEmbeddedLauncher
+Bundle-Name: Gecko Bndtools Pre-Launcher for Eclipse
+Bundle-Description: Gecko Bndtools Pre-Launcher for Eclipse
