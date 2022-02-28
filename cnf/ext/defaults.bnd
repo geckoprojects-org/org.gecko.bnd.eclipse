@@ -50,6 +50,14 @@ Bundle-Version: ${bnd-eclipse-version}
 
 -removeheaders: Bnd-LastModified, Tool, Created-By
 
+-plugin.dimrelease: \
+	aQute.bnd.repository.maven.provider.MavenBndRepository;\
+		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/;\
+		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/dim-release/;\
+		readOnly=true; \
+		poll.time=-1;\
+		name='DIM_Release'
+
 -plugin.baseline: \
 	aQute.bnd.repository.osgi.OSGiRepository;\
 		name=Baseline;\
