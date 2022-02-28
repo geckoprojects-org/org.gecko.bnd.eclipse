@@ -11,6 +11,10 @@
  */
 package org.gecko.eclipse.compatibility;
 
+import static org.gecko.eclipse.api.BndEclipseConstants.BSN_ECLIPSE_CORE_RUNTIME;
+import static org.gecko.eclipse.api.BndEclipseConstants.PROP_ECLIPSE_IGNORE_APP;
+import static org.gecko.eclipse.api.BndEclipseConstants.PROP_ECLIPSE_INITIALIZE;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -41,9 +45,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.condition.Condition;
 import org.osgi.util.promise.PromiseFactory;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
-
-import static org.gecko.eclipse.api.BndEclipseConstants.*; 
+import org.osgi.util.tracker.ServiceTrackerCustomizer; 
 
 /**
  * Component taking the Job of the EclipsePlattformStarter that starts the configured Application as soon as the 

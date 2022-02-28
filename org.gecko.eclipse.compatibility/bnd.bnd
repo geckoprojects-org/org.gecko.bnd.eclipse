@@ -16,3 +16,7 @@ Export-Package: \
 -privatepackage: org.gecko.eclipse.compatibility
 Bundle-Name: Gecko Eclipse Compatibility 
 Bundle-Description: Gecko Eclipse Compatibility for lauching Eclipse from outside the PDE
+
+Require-Capability: \
+	osgi.identity;\
+	filter:="(&(osgi.identity=org.gecko.eclipse.compatibility.equinox.config))"
