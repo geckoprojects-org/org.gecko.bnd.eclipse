@@ -1,0 +1,15 @@
+-buildpath: \
+	osgi.annotation;version='7.0.0',\
+	osgi.cmpn;version='7.0.0',\
+	osgi.core;version='7.0.0',\
+	org.osgi.service.condition;version=latest,\
+	org.eclipse.osgi;version='3.10',\
+	org.gecko.eclipse.api
+
+javac.source: 1.8
+javac.target: 1.8
+
+Private-Package: org.gecko.eclipse.compatibility.equinox.config
+Export-Package: org.gecko.eclipse.compatibility.equinox.config.api
+Bundle-Name: Gecko Eclipse Compatibility Equinox Configuration
+Bundle-Description: Builds the Eclipse / Equinox specific launch configuration

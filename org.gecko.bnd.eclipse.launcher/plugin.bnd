@@ -1,0 +1,13 @@
+Private-Package: \
+	org.gecko.bnd.eclipse.launcher.plugin,\
+	biz.aQute.resolve
+	
+Launcher-Plugin: org.gecko.bnd.eclipse.launcher.plugin.EclipseStyleProjectLauncherImpl
+
+-includeresource.pre: \
+	org.gecko.bnd.eclipse.launcher.pre.jar=${repo;org.gecko.bnd.eclipse.launcher.pre;latest}
+
+Import-Package: !*
+	
+Bundle-Name: Gecko Eclipse Bnd Launcher
+Bundle-Description: Gecko Bndtools Launcher for Eclipse applications

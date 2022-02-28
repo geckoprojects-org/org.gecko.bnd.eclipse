@@ -1,0 +1,10 @@
+-plugin.Release: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo; \
+		name = Release; \
+		pretty = true; \
+		local = ${build}/release
+		
+-snapshot: ${tstamp}-SNAPSHOT
+-pom: version=${versionmask;===s;${@version}}
+
+		

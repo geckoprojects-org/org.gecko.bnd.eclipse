@@ -1,0 +1,49 @@
+# This can run with Felix too, but we 
+-runfw: org.eclipse.osgi
+-runee: JavaSE-11
+
+# You need this at least at export time, so you can determine you system specific launcher
+-runsystemcapabilities: ${native_capability}
+
+# The launcher plugin is used by bnd to have an Equinox styled launcher and provide and RCP Product export
+# The Monitor needs to be there, if you want to  use the splash screen and close it at a certain point
+-runpath: \
+	org.gecko.bnd.eclipse.launcher.plugin,\
+	org.gecko.bnd.equinox.launcher.splashscreen
+
+-runbundles:\
+	org.apache.felix.gogo.runtime,\
+	org.apache.felix.gogo.shell,\
+	org.apache.felix.gogo.command,\
+	org.gecko.eclipse.compatibility,\
+	org.gecko.eclipse.compatibility.equinox.config
+	
+# Eclipse does not work with the felix eventadmin, because sync events will be send in a different Thread. This breaks the UI Events, that expect to run in the same thread as the UI.	
+-runblacklist: \
+	bnd.identity;id='org.apache.felix.eventadmin'	
+
+# org.gecko.eclipse.compatibility is the bundle that starts the EquinoxApplication
+-runrequires:\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
+	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',
+	osgi.identity;filter:='(osgi.identity=org.gecko.eclipse.compatibility)'
+
+# if you want to start an eclipse product, put your product or application id here
+#-runproperties.product: \
+#	eclipse.produc=your.product.id,\
+#	eclipse.application=your.application.id
+
+# uncomment this to set a workspace (former -data attribute)
+#-runproperties.workspace: \
+#	osgi.instance.area=/your/workspace/here
+
+
+# If you want to have a splash, add the splash location with the program args
+#-runproperties.splash:\
+#	splash.location=splash/splash.bmp
+
+# if you want the splash, you want to add the resource here for the product export
+#-includeresource: \
+#	/splash/splash.bmp=${.}/splash/splash.bmp
+
+

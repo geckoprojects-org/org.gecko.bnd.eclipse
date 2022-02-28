@@ -1,0 +1,37 @@
+Bundle-Description: This bundle provides bnd templates for Eclipse RCP application
+
+-includeresource: resources
+-resourceonly: true
+ 
+category: bbb/Gecko BND Eclipse RCP Templates
+category-launch: bbb/Gecko RCP Templates
+
+dataurl: data:image/gif;base64
+
+gecko-icon: ${dataurl},${base64;${workspace}/cnf/icons/gecko.ico}
+
+launch-template-gecko-bnd-eclipse:\
+	org.bndtools.template; org.bndtools.template=bndrun;\
+		name=Gecko Equinox BND Run;\
+		category=${category-launch};\
+		dir=launch/gecko-rcp-run-small;\
+        icon="${gecko-icon}";\
+		engine=mustache;\
+        help=launch/gecko-rcp-run-small.xml
+      
+project-template-e4-rcp:\
+	org.bndtools.template; org.bndtools.template=project;\
+		name=Eclipse E4 Example Application Template;\
+		category=${category};\
+		ranking:Double=1001;\
+		dir=e4-rcp;\
+		icon="${gecko-icon}";\
+		engine=mustache;\
+		help=e4-rcp-help.xml
+ 
+Provide-Capability: \
+	${launch-template-gecko-bnd-eclipse},\
+	${project-template-e4-rcp}
+
+
+Bundle-Name: Gecko Eclipse RCP Bnd Project Template

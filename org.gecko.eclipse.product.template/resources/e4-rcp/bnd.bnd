@@ -1,0 +1,18 @@
+Bundle-SymbolicName: ${project.name};singleton:=true
+Bundle-Version: 1.0.0.SNAPSHOT
+
+-includeresource: \
+	Application.e4xmi,\
+	plugin.xml
+	
+-buildpath: \
+	osgi.cmpn;version='7.0.0',\
+	javax.inject;version=latest,\
+	org.eclipse.e4.core.di.annotations;version=latest,\
+	org.eclipse.e4.ui.workbench;version=latest,\
+	org.eclipse.e4.ui.di;version=latest,\
+	org.gecko.eclipse.api;version=latest
+
+-privatepackage: \
+	{{basePackageName}}
+

@@ -1,0 +1,17 @@
+-include: ~launch_base.bndrun
+
+-runsystemcapabilities.native: ${native_capability;osname=Linux;osversion=3.14;processor=x86_64}
+
+
+-runrequires.linux: \
+	bnd.identity;id='org.eclipse.swt.gtk.linux.x86_64',\
+	bnd.identity;id='org.eclipse.core.filesystem.linux.x86_64',\
+	bnd.identity;id='org.eclipse.core.net.linux.x86_64',\
+	bnd.identity;id='org.eclipse.equinox.security.linux.x86_64'
+	
+-runbundles.linux: \
+	org.eclipse.core.filesystem.linux.x86_64,\
+	org.eclipse.core.net.linux.x86_64,\
+	org.eclipse.equinox.security.linux.x86_64,\
+	org.eclipse.swt.gtk.linux.x86_64
+

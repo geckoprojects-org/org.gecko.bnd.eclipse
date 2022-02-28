@@ -1,0 +1,12 @@
+
+-buildpath: ${bnd-eclipse-deps}
+	
+bnd-eclipse-deps: \
+	org.gecko.bnd.eclipse.launcher.plugin;version=snapshot,\
+	org.gecko.bnd.equinox.executable.linux;version=snapshot,\
+	org.gecko.bnd.equinox.executable.win32;version=snapshot,\
+	org.gecko.bnd.equinox.launcher.splashscreen;version=snapshot,\
+	org.gecko.eclipse.api;version=snapshot,\
+	org.gecko.eclipse.compatibility;version=snapshot,\
+	org.gecko.eclipse.compatibility.equinox.config;version=snapshot,\
+	org.gecko.eclipse.product.template;version=snapshot

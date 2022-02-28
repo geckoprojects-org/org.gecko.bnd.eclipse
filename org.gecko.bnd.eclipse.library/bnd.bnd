@@ -1,0 +1,18 @@
+-resourceonly: true
+-include: ${.}/buildpath.bnd	
+mavendeps: ${sjoin;\n; ${template;-maven-dependencies;${@}}}
+
+
+-includeresource: resources,\
+	{template/bnd-eclipse-central.maven=resources/template/bnd-eclipse-central.maven}	
+	
+Provide-Capability: \
+	${gecko-base}
+
+gecko-base:\
+    bnd.library;\
+        bnd.library     = geckoBndEclipse; \
+        path            = template
+        
+Bundle-Name: Gecko Bnd Eclipse Library
+Bundle-Description: Gecko Bnd Eclipse Library for Eclipse and RCP Support
