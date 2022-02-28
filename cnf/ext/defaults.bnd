@@ -23,22 +23,22 @@ Bundle-License: Eclipse Public License 2.0
 Bundle-Copyright:Data In Motion GmbH all rights reserved
 Bundle-Vendor: Data In Motion GmbH
 Bundle-ContactAddress: info@data-in-motion.biz
-Bundle-DocURL: https://gitlab.com/gecko.io/geckoBNDEquinox
-Bundle-SCM: url=https://gitlab.com/gecko.io/geckoBNDEquinox, \
-	connection=scm:git:https://gitlab.com/gecko.io/geckoBNDEquinox.git, \
-	developerConnection=scm:git:git@gitlab.com:gecko.io/geckoBNDEquinox.git
+Bundle-DocURL: https://github.com/geckoprojects-org/org.gecko.bnd.eclipse
+Bundle-SCM: url=https://github.com/geckoprojects-org/org.gecko.bnd.eclipse, \
+	connection=scm:git:https://github.com/geckoprojects-org/org.gecko.bnd.eclipse.git, \
+	developerConnection=scm:git:git@github.com:geckoprojects-org/org.gecko.bnd.eclipse.git
 Bundle-Developers: \
     jalbert; \
         email="j.albert@data-in-motion.biz"; \
         name="Juergen Albert"; \
         organization="Data In Motion"; \
-        organizationUrl="https://www.datainmotion.de"; \
+        organizationUrl="https://www.datainmotion.com"; \
         roles="architect,developer", \
     mhoffmann; \
         name="Mark Hoffmann"; \
         email="m.hoffmann@data-in-motion.biz"; \
         organization="Data In Motion"; \
-        organizationUrl="https://www.datainmotion.de"; \
+        organizationUrl="https://www.datainmotion.com"; \
         roles="developer,architect"
 Bundle-Version: ${bnd-eclipse-version}
 

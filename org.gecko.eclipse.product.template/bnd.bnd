@@ -24,7 +24,7 @@ project-template-e4-rcp:\
 		name=Eclipse E4 Example Application Template;\
 		category=${category};\
 		ranking:Double=1001;\
-		dir=rcp;\
+		dir=e4-rcp;\
 		icon="${gecko-icon}";\
 		engine=mustache;\
 		help=e4-rcp-help.xml
