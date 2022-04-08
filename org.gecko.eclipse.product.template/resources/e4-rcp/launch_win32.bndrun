@@ -3,7 +3,7 @@
 -runsystemcapabilities.native: ${native_capability;osname=Windows;osversion=10;processor=x86_64}
 -runprovidedcapabilities.native: ${native_capability;osname=Windows;osversion=10;processor=x86_64}
 
--runblacklist.linux: \
+-runblacklist.win32: \
 	osgi.identity;filter:='(osgi.identity=*macosx*)',\
 	osgi.identity;filter:='(osgi.identity=*linux*)',\
 	
