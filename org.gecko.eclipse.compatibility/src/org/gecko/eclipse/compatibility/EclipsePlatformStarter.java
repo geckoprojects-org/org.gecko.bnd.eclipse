@@ -45,8 +45,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.condition.Condition;
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.PromiseFactory;
@@ -82,7 +80,6 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 	
 	private final EnvironmentInfo envInfo;
 	
-
 	private EclipseAppLauncher appLauncher;
 
 	private ServiceRegistration<ApplicationLauncher> appLauncherRegistration;
@@ -217,7 +214,7 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 		appLauncherRegistration = ctx.registerService(ApplicationLauncher.class, appLauncher, null);
 	}
 	
-	private class RunApplicationCallable implements Callable<Object>, Runnable{
+	private class RunApplicationCallable implements Callable<Object>{
 
 		private Deferred<Object> deferred;
 		private EclipseAppLauncher launcher;
@@ -238,7 +235,7 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 		 */
 		@Override
 		public Object call() throws Exception {
-			ServiceRegistration<Runnable> registerService = ctx.registerService(Runnable.class, this, new Hashtable<String, Object>(Collections.singletonMap("main.thread", "true")));
+			ServiceRegistration<Callable> registerService = ctx.registerService(Callable.class, new MainCallable(launcher, deferred) , new Hashtable<String, Object>(Collections.singletonMap("main.thread", "true")));
 			try {
 				Object value = deferred.getPromise().getValue();
 				return value;
@@ -246,13 +243,27 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 				registerService.unregister();
 			}
 		}
+	}
 
+	private class MainCallable implements Callable<Integer>{
+		
+		private Deferred<Object> deferred;
+		private EclipseAppLauncher launcher;
+		
+		/**
+		 * Creates a new instance.
+		 */
+		public MainCallable(EclipseAppLauncher launcher, Deferred<Object> deferred) {
+			this.launcher = launcher;
+			this.deferred = deferred;
+		}
+		
 		/* 
 		 * (non-Javadoc)
-		 * @see java.lang.Runnable#run()
+		 * @see java.util.concurrent.Callable#call()
 		 */
 		@Override
-		public void run() {
+		public Integer call() throws Exception {
 			Object start;
 			try {
 				start = launcher.start(null);
@@ -260,8 +271,8 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 			} catch (Exception e) {
 				deferred.fail(e);
 			}	
+			return 198;
 		}
-		
 	}
 
 	private void shutdownFramework(Object o) throws BundleException {
