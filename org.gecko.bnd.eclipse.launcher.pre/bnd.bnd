@@ -1,6 +1,6 @@
+-library: enable-emf
+
 -buildpath: \
-	osgi.core;version='7.0.0',\
-	osgi.annotation;version='7.0.0',\
 	slf4j.api;version=latest,\
 	aQute.libg;version=latest,\
 	biz.aQute.bnd;version=latest,\

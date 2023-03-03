@@ -5,6 +5,8 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	Application.e4xmi,\
 	plugin.xml
 	
+-library:enable-emf
+
 -buildpath: \
 	org.eclipse.e4.core.services,\
 	org.eclipse.e4.ui.model.workbench,\
@@ -20,6 +22,7 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	org.eclipse.jdt.core,\
 	org.eclipse.swt.win32.win32.x86_64,\
 	javax.inject,\
+	org.osgi.service.event,\
 	org.eclipse.equinox.common;version=3.10,\
 	org.gecko.bnd.equinox.launcher.splashscreen;version=latest,\
 	org.gecko.bnd.eclipse.rcp.annotations,\

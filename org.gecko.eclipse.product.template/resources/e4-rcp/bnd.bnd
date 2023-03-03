@@ -5,9 +5,10 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	Application.e4xmi,\
 	plugin.xml
 	
+-library: enable-emf
 -buildpath: \
-	osgi.cmpn;version='7.0.0',\
 	javax.inject;version=latest,\
+	org.osgi.service.event,\
 	org.eclipse.e4.core.di.annotations;version=latest,\
 	org.eclipse.e4.ui.workbench;version=latest,\
 	org.eclipse.e4.ui.di;version=latest,\
