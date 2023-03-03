@@ -1,5 +1,3 @@
--library: enable-emf
-
 -buildpath: \
 	org.osgi.service.condition;version='1.0.0',\
 	org.osgi.util.promise;version='1.1.0',\
@@ -7,7 +5,8 @@
 	org.eclipse.osgi;version='3.10',\
 	org.gecko.eclipse.api;version=project,\
 	org.gecko.eclipse.compatibility.equinox.config;version=project,\
-	org.eclipse.equinox.app
+	org.eclipse.equinox.app,\
+	org.osgi.service.component.annotations
 	
 Export-Package: \
 	org.gecko.eclipse.annotations,\

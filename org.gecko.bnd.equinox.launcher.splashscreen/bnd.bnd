@@ -1,4 +1,3 @@
--library: enable-emf
 -buildpath: \
 	org.eclipse.equinox.launcher;version=latest,\
 	org.eclipse.osgi;version=latest,\

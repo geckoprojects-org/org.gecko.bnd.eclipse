@@ -5,8 +5,6 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	Application.e4xmi,\
 	plugin.xml
 	
--library:enable-emf
-
 -buildpath: \
 	org.eclipse.e4.core.services,\
 	org.eclipse.e4.ui.model.workbench,\

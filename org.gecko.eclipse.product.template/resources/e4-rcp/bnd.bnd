@@ -5,7 +5,6 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	Application.e4xmi,\
 	plugin.xml
 	
--library: enable-emf
 -buildpath: \
 	javax.inject;version=latest,\
 	org.osgi.service.event,\

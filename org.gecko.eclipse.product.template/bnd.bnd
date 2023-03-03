@@ -1,5 +1,4 @@
 Bundle-Description: This bundle provides bnd templates for Eclipse RCP application
--library: enable-emf
 -includeresource: resources
 -resourceonly: true
  

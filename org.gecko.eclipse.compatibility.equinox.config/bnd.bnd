@@ -1,10 +1,10 @@
--library: enable-emf
-
 -buildpath: \
 	org.osgi.service.condition;version=latest,\
 	org.eclipse.osgi;version='3.10',\
 	org.gecko.eclipse.api,\
-	org.osgi.service.component
+	org.osgi.service.component,\
+	org.eclipse.osgi.services,\
+	org.osgi.annotation.bundle
 
 javac.source: 11
 javac.target: 11

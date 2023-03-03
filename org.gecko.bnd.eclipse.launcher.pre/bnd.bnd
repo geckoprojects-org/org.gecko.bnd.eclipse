@@ -1,12 +1,12 @@
--library: enable-emf
-
 -buildpath: \
 	slf4j.api;version=latest,\
 	aQute.libg;version=latest,\
 	biz.aQute.bnd;version=latest,\
 	biz.aQute.bndlib;version=latest,\
 	org.eclipse.equinox.launcher;version=latest,\
-	org.gecko.eclipse.api;version=project
+	org.gecko.eclipse.api;version=project,\
+	org.osgi.annotation.bundle,\
+	org.osgi.framework
 
 -testpath: \
 	${junit},\
