@@ -233,6 +233,7 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 		 * (non-Javadoc)
 		 * @see java.util.concurrent.Callable#call()
 		 */
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Object call() throws Exception {
 			ServiceRegistration<Callable> registerService = ctx.registerService(Callable.class, new MainCallable(launcher, deferred) , new Hashtable<String, Object>(Collections.singletonMap("main.thread", "true")));

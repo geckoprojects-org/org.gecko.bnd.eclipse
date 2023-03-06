@@ -19,6 +19,6 @@ Provide-Capability:\
 Executable-Name: launcher
 Executable-Path: launcher
 
-Equinox-Lib: eclipse_11600.so
+Equinox-Lib: eclipse_11701.so
 Bundle-Name: Gecko Bnd Eclipse Launcher Linux
 Bundle-Description: Gecko Bnd Eclipse Launcher Linux x86_64

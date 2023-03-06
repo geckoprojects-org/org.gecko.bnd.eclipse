@@ -1,4 +1,3 @@
-
 -buildpath: ${bnd-eclipse-deps}
 	
 bnd-eclipse-deps: \

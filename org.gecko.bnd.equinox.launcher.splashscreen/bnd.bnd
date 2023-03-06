@@ -1,6 +1,4 @@
 -buildpath: \
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
 	org.eclipse.equinox.launcher;version=latest,\
 	org.eclipse.osgi;version=latest,\
 	org.eclipse.swt.gtk.linux.x86_64;version='3.114',\

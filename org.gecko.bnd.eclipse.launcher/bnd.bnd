@@ -1,6 +1,4 @@
 -buildpath: \
-	osgi.core;version='7.0.0',\
-	osgi.cmpn;version='7.0.0',\
 	slf4j.api;version=latest,\
 	aQute.libg;version=latest,\
 	biz.aQute.bnd;version=latest,\
@@ -8,7 +6,8 @@
 	org.eclipse.equinox.launcher;version=latest,\
 	org.eclipse.equinox.p2.publisher.eclipse;version=latest,\
 	org.gecko.bnd.eclipse.launcher.pre;version=project,\
-	org.gecko.eclipse.api;version=project
+	org.gecko.eclipse.api;version=project,\
+	org.osgi.framework
 
 -buildpath+: biz.aQute.launcher;maven-version=1
 

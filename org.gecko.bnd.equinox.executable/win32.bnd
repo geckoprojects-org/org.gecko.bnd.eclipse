@@ -21,6 +21,6 @@ Executable-Path: launcher.exe
 Executable-Name-Debug: eclipse
 Executable-Path-Debug: eclipsec.exe
 
-Equinox-Lib: eclipse_11602.dll
+Equinox-Lib: eclipse_11700.dll
 Bundle-Description: Gecko Bnd Eclipse Launcher Windows x86_64
 Bundle-Name: Gecko Bnd Eclipse Launcher Windows

@@ -2,4 +2,5 @@ eclipse.preferences.version=1
 encoding//src/org/gecko/eclipse/annotations/package-info.java=UTF-8
 encoding//src/org/gecko/eclipse/api/BndEclipseConstants.java=UTF-8
 encoding//src/org/gecko/eclipse/api/package-info.java=UTF-8
+encoding/<project>=UTF-8
 encoding/bnd.bnd=UTF-8
