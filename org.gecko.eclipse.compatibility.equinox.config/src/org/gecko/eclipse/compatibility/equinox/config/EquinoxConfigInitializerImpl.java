@@ -114,7 +114,7 @@ public class EquinoxConfigInitializerImpl implements Condition {
 				equinoxConfig.setProperty(PROP_DEV, ""); //$NON-NLS-1$
 				found = true;
 			}
-
+			
 			// look for the clean flag.
 			if (args[i].equalsIgnoreCase(CLEAN)) {
 				equinoxConfig.setProperty(PROP_CLEAN, "true"); //$NON-NLS-1$

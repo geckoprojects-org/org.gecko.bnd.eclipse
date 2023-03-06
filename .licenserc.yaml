@@ -38,6 +38,7 @@ header:
     - '**/*.ftl'
     - '**/*.aird'
     - '**/*.bak'
+    - '**/*.sha'
     - '**/*.basic'
     - '**/.classpath'
     - 'org.gecko.eclipse.product.template/resources/**/*'

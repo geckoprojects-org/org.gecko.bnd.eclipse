@@ -1,4 +1,4 @@
-This project is a simple Example that represents the default Eclipse E4 Application with sample content the PDE also provides.
+This project is a simple Example that represents the default Eclipse E3 Application with sample content the PDE also provides.
 
 If you want to modify it, only add -runrequire bundles in the **launch_base.bndrun** and resolve only the **launch_base.bndrun**. 
 

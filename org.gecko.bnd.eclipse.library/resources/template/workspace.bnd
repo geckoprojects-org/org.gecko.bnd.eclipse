@@ -7,8 +7,8 @@
         
 -plugin.bnd.eclipse.central: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
-		snapshotUrls=https://oss.sonatype.org/content/repositories/snapshots/; \
-		releaseUrls=https://repo.maven.apache.org/maven2/; \
+		snapshotUrl=https://oss.sonatype.org/content/repositories/snapshots/; \
+		releaseUrl=https://repo.maven.apache.org/maven2/; \
 		index=${.}/bnd-eclipse-central.maven; \
 		readOnly=true; \
 		poll.time=-1;\

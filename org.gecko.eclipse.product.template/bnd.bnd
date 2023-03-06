@@ -18,19 +18,32 @@ launch-template-gecko-bnd-eclipse:\
 		engine=mustache;\
         help=launch/gecko-rcp-run-small.xml
       
+project-template-e3-rcp:\
+	org.bndtools.template; org.bndtools.template=project;\
+		name=Eclipse E3 RCP Application Template;\
+		category=${category};\
+		ranking:Double=1001;\
+		dir=e3-rcp;\
+		icon="${gecko-icon}";\
+		metaType=e3-rcp-metatype.xml;\
+		engine=mustache;\
+		help=e3-rcp-help.xml
+		
 project-template-e4-rcp:\
 	org.bndtools.template; org.bndtools.template=project;\
-		name=Eclipse E4 Example Application Template;\
+		name=Eclipse E4 RCP Application Template;\
 		category=${category};\
 		ranking:Double=1001;\
 		dir=e4-rcp;\
+		metaType=e4-rcp-metatype.xml;\
 		icon="${gecko-icon}";\
 		engine=mustache;\
 		help=e4-rcp-help.xml
  
 Provide-Capability: \
 	${launch-template-gecko-bnd-eclipse},\
-	${project-template-e4-rcp}
+	${project-template-e4-rcp},\
+	${project-template-e3-rcp}
 
 
 Bundle-Name: Gecko Eclipse RCP Bnd Project Template

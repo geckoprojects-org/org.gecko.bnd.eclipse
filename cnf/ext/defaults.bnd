@@ -62,7 +62,7 @@ Bundle-Version: ${bnd-eclipse-version}
 		name=Baseline;\
 		readonly = true;\
 		max.stale=-1;\
-		locations=https://devel.data-in-motion.biz/repository/gecko/release/geckoBNDEquinox/index.xml;\
+		locations=https://devel.data-in-motion.biz/repository/gecko/release/org.gecko.bnd.eclipse/index.xml;\
 		cache=${build}/cache/Baseline
 
 -maven-release: pom
@@ -74,8 +74,8 @@ Bundle-Version: ${bnd-eclipse-version}
 -releaserepo: Release, DIM_Release
 
 # Enable semantic versioning for all bundles
-#-baselinerepo: Baseline
-#-baseline: *
+-baselinerepo: Baseline
+-baseline: *
 
 # Ignore files for baselining
 -diffignore: *.xml,\
