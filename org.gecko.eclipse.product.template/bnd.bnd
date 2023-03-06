@@ -27,7 +27,7 @@ project-template-e3-rcp:\
 		icon="${gecko-icon}";\
 		metaType=e3-rcp-metatype.xml;\
 		engine=mustache;\
-		help=e3-rcp-help.xml
+		help=e3-rcp.xml
 		
 project-template-e4-rcp:\
 	org.bndtools.template; org.bndtools.template=project;\
@@ -38,7 +38,7 @@ project-template-e4-rcp:\
 		metaType=e4-rcp-metatype.xml;\
 		icon="${gecko-icon}";\
 		engine=mustache;\
-		help=e4-rcp-help.xml
+		help=e4-rcp.xml
  
 Provide-Capability: \
 	${launch-template-gecko-bnd-eclipse},\
