@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.2.0">
+  <OCD id="org.gecko.bnd.eclipse.templates.e3" name="Gecko Bnd Eclipse E3 Project Template" description="Project template to start development with an Eclipse E3 RCP">
+    <AD id="eclipse.product.id" type="String" name="Eclipse RCP Product Id" description="The id of the Eclipse RCP Product" default="sample.rcp.product"/>
+    <AD id="eclipse.application.id" type="String" name="Eclipse RCP Application Id" description="The if of the Eclipse RCP Application" default="sample.rcp.application"/>
+  </OCD>
+</metatype:MetaData>

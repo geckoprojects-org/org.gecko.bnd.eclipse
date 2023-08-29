@@ -12,9 +12,14 @@
 package org.gecko.eclipse.compatibility;
 
 import static org.gecko.eclipse.api.BndEclipseConstants.BSN_ECLIPSE_CORE_RUNTIME;
+import static org.gecko.eclipse.api.BndEclipseConstants.CONDITION_EQUINOX_CONFIG;
 import static org.gecko.eclipse.api.BndEclipseConstants.PROP_ECLIPSE_IGNORE_APP;
 import static org.gecko.eclipse.api.BndEclipseConstants.PROP_ECLIPSE_INITIALIZE;
+import static org.gecko.eclipse.api.BndEclipseConstants.PROP_NOSHUTDOWN;
 
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -40,9 +45,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.condition.Condition;
+import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.PromiseFactory;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer; 
@@ -54,7 +58,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Juergen Albert
  */
 @Component(immediate=true , reference = {
-		@Reference(name = "equinoxConfig", service = Condition.class, policy=ReferencePolicy.STATIC, cardinality=ReferenceCardinality.MANDATORY, target = "(" + Condition.CONDITION_ID + "=equinoxConfig)")
+//		@Reference(name = "equinoxConfig", service = Condition.class, policy=ReferencePolicy.STATIC, cardinality=ReferenceCardinality.MANDATORY, target = "(" + Condition.CONDITION_ID + "=" + CONDITION_EQUINOX_CONFIG + ")")
 } )
 public class EclipsePlatformStarter implements ServiceTrackerCustomizer<ApplicationDescriptor, ApplicationDescriptor> {
 
@@ -72,28 +76,34 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 
 	private Logger logger = Logger.getLogger(EclipsePlatformStarter.class.getName());
 	
-	@Reference
-	FrameworkLog log;
+	private final FrameworkLog log;
 	
-	@Reference
-	EnvironmentInfo envInfo;
+	private final EnvironmentInfo envInfo;
 	
-
 	private EclipseAppLauncher appLauncher;
 
 	private ServiceRegistration<ApplicationLauncher> appLauncherRegistration;
 
-	private AtomicBoolean shutdown = new AtomicBoolean(true);
+	private final AtomicBoolean shutdown = new AtomicBoolean(true);
 
-	private BundleContext ctx;
+	private final BundleContext ctx;
 
 	private ServiceTracker<ApplicationDescriptor, ApplicationDescriptor> descriptorTracker;
 
 	private String applicationId;
+
+	private final boolean noShutDown;
 	
 	@Activate
-	public void activate(BundleContext ctx) throws InvalidSyntaxException, BundleException {
+	public EclipsePlatformStarter(BundleContext ctx, 
+			@Reference FrameworkLog log, 
+			@Reference EnvironmentInfo envInfo, 	
+			@Reference(target = "(" + Condition.CONDITION_ID + "=" + CONDITION_EQUINOX_CONFIG + ")")
+			Condition equinoxConfig
+	) throws InvalidSyntaxException, BundleException {
 		this.ctx = ctx;
+		this.log = log;
+		this.envInfo = envInfo;
 		Bundle runtimeBundle = findBundle(BSN_ECLIPSE_CORE_RUNTIME, ctx);
 		if(runtimeBundle != null) {
 			try {
@@ -103,8 +113,11 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 				throw e;
 			}
 		}
+
+		String noShutdown = getProperty(ctx, envInfo, PROP_NOSHUTDOWN);
+		this.noShutDown = Boolean.parseBoolean(noShutdown);
 		
-		String initMode = ctx.getProperty(PROP_ECLIPSE_INITIALIZE);
+		String initMode = getProperty(ctx, envInfo, PROP_ECLIPSE_INITIALIZE);
 		if(Boolean.parseBoolean(initMode)) {
 			
 			try {
@@ -116,9 +129,9 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 			}
 			return;
 		}
-		String ignoreApp = ctx.getProperty(PROP_ECLIPSE_IGNORE_APP);
+		String ignoreApp = getProperty(ctx, envInfo, PROP_ECLIPSE_IGNORE_APP);
 		if(!Boolean.parseBoolean(ignoreApp)) {
-			applicationId = ctx.getProperty("eclipse.application");
+			applicationId = getProperty(ctx, envInfo, "eclipse.application");
 			if(applicationId == null) {
 				logger.severe("Can't start Equinox Application because no eclipse.application property is defined");
 				return;
@@ -127,6 +140,14 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 			descriptorTracker = new ServiceTracker<ApplicationDescriptor, ApplicationDescriptor>(ctx, filter, this);
 			descriptorTracker.open();
 		}
+	}
+	
+	private static String getProperty(BundleContext ctx, EnvironmentInfo envInfo, String prop) {
+		String result = ctx.getProperty(prop);
+		if(result != null) {
+			return result;
+		}
+		return envInfo.getProperty(prop);
 	}
 	
 	@Deactivate
@@ -169,28 +190,89 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 	}
 
 	private void startApplication() {
-		PromiseFactory promiseFactory = new PromiseFactory(executorService);
+		final PromiseFactory promiseFactory = new PromiseFactory(executorService);
 		logger.fine("Registering Gecko Equinox App  Launcher");
 		
 		// create the ApplicationLauncher and register it as a service
 		appLauncher = new EclipseAppLauncher(ctx, false, false, log, (EquinoxConfiguration) envInfo);
 		logger.fine("Starting Equinox App Launcher");
+		Deferred<Object> deferred = promiseFactory.deferred();
 		
 		// must start the launcher AFTER service registration because this method 
 		// blocks and runs the application on the current thread.  This method 
-		promiseFactory.submit(() -> {
-			// will return only after the application has stopped.
-			Object start = appLauncher.start(null);	
-			return start;
-		}).thenAccept(o -> {
-			if(shutdown.get()) {
+		promiseFactory.submit(new RunApplicationCallable(appLauncher, deferred, ctx))
+		.thenAccept(o -> {
+			if(shutdown.get() && !noShutDown) {
 				shutdownFramework(o);
 			} 
 		}).onFailure(t -> {
 			t.printStackTrace();
-			System.exit(42);	
+			if(!noShutDown) {
+				System.exit(42);	
+			}
 		});
 		appLauncherRegistration = ctx.registerService(ApplicationLauncher.class, appLauncher, null);
+	}
+	
+	private class RunApplicationCallable implements Callable<Object>{
+
+		private Deferred<Object> deferred;
+		private EclipseAppLauncher launcher;
+		private BundleContext ctx;
+
+		/**
+		 * Creates a new instance.
+		 */
+		public RunApplicationCallable(EclipseAppLauncher launcher, Deferred<Object> deferred, BundleContext ctx) {
+			this.launcher = launcher;
+			this.deferred = deferred;
+			this.ctx = ctx;
+		}
+		
+		/* 
+		 * (non-Javadoc)
+		 * @see java.util.concurrent.Callable#call()
+		 */
+		@Override
+		public Object call() throws Exception {
+			ServiceRegistration<Callable> registerService = ctx.registerService(Callable.class, new MainCallable(launcher, deferred) , new Hashtable<String, Object>(Collections.singletonMap("main.thread", "true")));
+			try {
+				Object value = deferred.getPromise().getValue();
+				return value;
+			} finally {
+				registerService.unregister();
+			}
+		}
+	}
+
+	private class MainCallable implements Callable<Integer>{
+		
+		private Deferred<Object> deferred;
+		private EclipseAppLauncher launcher;
+		
+		/**
+		 * Creates a new instance.
+		 */
+		public MainCallable(EclipseAppLauncher launcher, Deferred<Object> deferred) {
+			this.launcher = launcher;
+			this.deferred = deferred;
+		}
+		
+		/* 
+		 * (non-Javadoc)
+		 * @see java.util.concurrent.Callable#call()
+		 */
+		@Override
+		public Integer call() throws Exception {
+			Object start;
+			try {
+				start = launcher.start(null);
+				deferred.resolve(start);
+			} catch (Exception e) {
+				deferred.fail(e);
+			}	
+			return 198;
+		}
 	}
 
 	private void shutdownFramework(Object o) throws BundleException {

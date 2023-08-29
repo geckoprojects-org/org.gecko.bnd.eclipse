@@ -21,6 +21,9 @@
 	name=Test,\
 	splash.location=splash/splash.bmp
 	
+-runvm: -DpersistState=false\n\
+	-DclearPersistedState=true
+	
 # A couple of older bundles in the Eclipse targetplatform, expect certain packages e.g. from the javax namespace to be loaded from the System ClassLoader.
 # Uncomment this if you stume about ClassNotFoundExceptions for javax.* Classes or org.w3c.* etc. 
 #-runproperties.compatible.bootdelegation: \
