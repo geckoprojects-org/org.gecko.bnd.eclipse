@@ -17,23 +17,24 @@ import static org.gecko.eclipse.api.BndEclipseConstants.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Constants;
+
 
 public class EclipseLauncherConstantsTest {
 
 	private File installDir;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		installDir = File.createTempFile("install", "dir");
 		System.setProperty(PROP_INSTALL_AREA, installDir.getAbsoluteFile().toURI().toURL().toString());
 		installDir.deleteOnExit();
 	}
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 		System.getProperties().remove(PROP_CONFIG_AREA);
 		System.getProperties().remove(Constants.FRAMEWORK_STORAGE);

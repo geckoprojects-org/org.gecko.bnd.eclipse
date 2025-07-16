@@ -1,4 +1,4 @@
-bndbaseversion: 6.2.0
+bndbaseversion: 7.0.0
 
 bndversion: ${if;${def;release.dir};\
               ${bndbaseversion};\

@@ -1,16 +1,12 @@
+-library: enableOSGi-Test 
 -buildpath: \
-	osgi.core;version='7.0.0',\
-	osgi.annotation;version='7.0.0',\
 	slf4j.api;version=latest,\
 	aQute.libg;version=latest,\
 	biz.aQute.bnd;version=latest,\
 	biz.aQute.bndlib;version=latest,\
 	org.eclipse.equinox.launcher;version=latest,\
-	org.gecko.eclipse.api;version=project
-
--testpath: \
-	${junit},\
-	${assertj}
+	org.gecko.eclipse.api;version=project,\
+	org.osgi.framework
 
 -includeresource.base: \
 	@${repo;org.eclipse.equinox.launcher;latest}!/org/eclipse/equinox/launcher/JNIBridge.class
