@@ -27,3 +27,4 @@ javac.target: 1.8
 
 dimcBaselining: false
 github-project: org.gecko.bnd.eclipse
+-groupid: org.geckoprojects.bnd.eclipse
