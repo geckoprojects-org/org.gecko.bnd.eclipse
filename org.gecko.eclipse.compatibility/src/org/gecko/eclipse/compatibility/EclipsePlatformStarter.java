@@ -199,7 +199,7 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 		Deferred<Object> deferred = promiseFactory.deferred();
 		
 		// must start the launcher AFTER service registration because this method 
-		// blocks and runs the application on the current thread.  This method 
+		// blocks and runs the application on the current thread.
 		promiseFactory.submit(new RunApplicationCallable(appLauncher, deferred, ctx))
 		.thenAccept(o -> {
 			if(shutdown.get() && !noShutDown) {
