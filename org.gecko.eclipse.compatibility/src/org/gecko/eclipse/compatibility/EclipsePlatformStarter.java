@@ -266,14 +266,16 @@ public class EclipsePlatformStarter implements ServiceTrackerCustomizer<Applicat
 		 */
 		@Override
 		public Integer call() throws Exception {
-			Object start;
+			Object result = null;
 			try {
-				start = launcher.start(null);
-				deferred.resolve(start);
+				result = launcher.start(null);
+				if(!(result instanceof Integer)){
+					deferred.resolve(result);
+				}
 			} catch (Exception e) {
 				deferred.fail(e);
 			}	
-			return 198;
+			return (Integer) result;
 		}
 	}
 

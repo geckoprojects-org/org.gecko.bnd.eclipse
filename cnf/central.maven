@@ -54,6 +54,8 @@ org.osgi:org.osgi.util.xml:1.0.2
 org.osgi:org.osgi.util.promise:1.3.0
 org.osgi:org.osgi.util.pushstream:1.1.0
 
+org.apache.felix:org.apache.felix.scr:2.2.12
+
 
 # Eclipse Platform 2020-03 Dependencies
 org.eclipse.platform:org.eclipse.equinox.launcher:1.5.700
