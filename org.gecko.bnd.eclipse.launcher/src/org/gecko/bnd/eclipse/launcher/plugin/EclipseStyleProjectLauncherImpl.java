@@ -587,7 +587,7 @@ public class EclipseStyleProjectLauncherImpl extends ProjectLauncher {
 		PrintWriter writer = new PrintWriter(baos);
 		writer.println(STARTUP);
 		writer.println(preLauncherPath);
-		writer.println(LIBRARY);
+		writer.println("--launcher.library");
 		writer.println(libLocation);
 		Collection<String> programArgs = project.getRunProgramArgs();
 		boolean cleanSet = false;
