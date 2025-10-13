@@ -85,8 +85,7 @@ public class EclipseLauncherConstants {
 
 					case DEBUG:
 						debug = true;
-						passThrough.add(key); // pass thru this arg
-						processed = true;
+						// processed = false because we want to pass it through. If it has an arg we'll pass that through next time
 						break;
 					case NOSPLASH: // look for and consume the nosplash directive.
 						// This supercedes any -showsplash command that might be present.
@@ -96,7 +95,7 @@ public class EclipseLauncherConstants {
 						break;
 					case NOEXIT:
 						System.setProperty(PROP_NOSHUTDOWN, "true"); //$NON-NLS-1$
-						processed = true;
+						// processed = false because we want to pass it through
 						break;
 					case APPEND_VMARGS:
 					case OVERRIDE_VMARGS:
@@ -109,12 +108,7 @@ public class EclipseLauncherConstants {
 						processed = true;
 						break;
 					case DEV: // check if development mode should be enabled for the entire platform
-						// Pass through for now; we will process this later.
-						passThrough.add(key); // pass thru this key and its optional value (if present)
-						consumeParameter(args, arg -> {
-							passThrough.add(arg); // pass thru this value
-						});
-						processed = true;
+						// processed = false because we want to pass it through. If it has an arg we'll pass that through next time
 						break;
 					case SHOWSPLASH: // look for the command to use to show the splash screen
 						System.setProperty(SHOWSPLASH, "true");
@@ -159,8 +153,10 @@ public class EclipseLauncherConstants {
 						});
 						break;
 					case CONFIGURATION:
+						passThrough.add(key);
 						processed = consumeParameter(args, arg -> { // look for the configuration to use.
 							configArea = arg;
+							passThrough.add(arg); // also pass the arg through
 						});
 						break;
 					case EXITDATA:
@@ -180,8 +176,10 @@ public class EclipseLauncherConstants {
 						});
 						break;
 					case LAUNCHER:
+						passThrough.add(key);
 						processed = consumeParameter(args, arg -> { // look for the launcher location
 							System.setProperty(PROP_LAUNCHER, arg);
+							passThrough.add(arg);
 						});
 						break;
 					case LIBRARY:
@@ -200,16 +198,17 @@ public class EclipseLauncherConstants {
 						});
 						break;
 					case NL:
+						passThrough.add(key);
 						processed = consumeParameter(args, arg -> { // look for the nl setting
 							nl = arg;
+							passThrough.add(arg);
 						});
 						break;
 
-					// Equinox doesn't have a case for this, but Gecko wants to see it later
+					// Equinox doesn't have a case for this
 					case CLEAN:
 						clean = true;
-						passThrough.add(key); // pass thru this arg
-						processed = true;
+						// processed = false because we want to pass it through
 						break;
 
 					// Args that originate from bnd and are not recognised by standard Eclipse:
