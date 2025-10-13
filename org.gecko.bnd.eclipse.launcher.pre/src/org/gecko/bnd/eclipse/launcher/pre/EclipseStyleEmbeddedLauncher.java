@@ -90,7 +90,8 @@ public class EclipseStyleEmbeddedLauncher {
 		EclipseLauncherConstants props = new EclipseLauncherConstants(args);
 
 		if(props.library != null) {
-			System.setProperty(LIBRARY , props.library);	
+			System.setProperty(LIBRARY , props.library);
+			System.setProperty(PROP_LAUNCHER_LIBRARY, props.library);
 		}
 		
 		if(props.initialize) {
