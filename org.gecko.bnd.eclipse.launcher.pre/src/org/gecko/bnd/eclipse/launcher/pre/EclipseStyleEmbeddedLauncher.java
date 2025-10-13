@@ -97,8 +97,7 @@ public class EclipseStyleEmbeddedLauncher {
 			System.setProperty(PROP_ECLIPSE_INITIALIZE , Boolean.TRUE.toString());	
 		}
 		
-		//the launcher constants remove some constants. We have to do the following to avoid null values
-		args = Arrays.asList(args).stream().filter(s -> s != null).collect(Collectors.toList()).toArray(new String[0]);
+		args = props.passThrough.toArray(new String[0]);
 		
 		if (isVerbose) {
 			log("The following arguments after props:");

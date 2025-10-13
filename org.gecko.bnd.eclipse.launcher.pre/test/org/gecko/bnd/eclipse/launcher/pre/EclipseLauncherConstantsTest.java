@@ -16,6 +16,7 @@ import static org.gecko.eclipse.api.BndEclipseConstants.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,4 +110,30 @@ public class EclipseLauncherConstantsTest {
 		assertThat(storageDir).isEqualTo(conf.getAbsolutePath());
 	}
 
+	@Test
+	public void testPassThroughArgsAndFields() {
+		EclipseLauncherConstants eclipseLauncherConstants = new EclipseLauncherConstants(new String[] {
+				"-debug",
+				"-clean",
+				"-vm", "/path/to/my/java",
+				"-startup", "org.gecko.bnd.eclipse.launcher.pre.jar",
+				"-runpath", "path/to/my.launcher.jar,path/to/my.library.jar",
+				"-os", "linux",
+				"-exitdata", "DECAFC0FFEE15BAD",
+				"-name", "My App",
+				"-some-flag",
+				"-some-setting", "some value",
+				"extra arg", "another extra arg"
+		});
+		assertThat(eclipseLauncherConstants.vm).isEqualTo("/path/to/my/java");
+		assertThat(eclipseLauncherConstants.propBasedRunPath).isEqualTo(Arrays.asList("path/to/my.launcher.jar", "path/to/my.library.jar"));
+		assertThat(eclipseLauncherConstants.exitData).isEqualTo("DECAFC0FFEE15BAD");
+		assertThat(System.getProperty(PROP_LAUNCHER_NAME)).isEqualTo("My App");
+		assertThat(eclipseLauncherConstants.passThrough).isEqualTo(Arrays.asList(
+				"-debug", "-clean", "-os", "linux",
+				"-some-flag",
+				"-some-setting", "some value",
+				"extra arg", "another extra arg"
+		));
+	}
 }
