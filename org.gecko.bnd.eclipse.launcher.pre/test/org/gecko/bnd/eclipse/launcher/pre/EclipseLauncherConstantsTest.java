@@ -40,11 +40,12 @@ public class EclipseLauncherConstantsTest {
 		System.getProperties().remove(PROP_CONFIG_AREA);
 		System.getProperties().remove(Constants.FRAMEWORK_STORAGE);
 		System.getProperties().remove(PROP_LAUNCH_STORAGE_DIR);
+		System.getProperties().remove(PROP_LAUNCHER_NAME);
 	}
 
 	@Test
 	public void testConfigDefault() {
-		new EclipseLauncherConstants(new String[] {});
+		EclipseLauncherConstants eclipseLauncherConstants = new EclipseLauncherConstants(new String[] {});
 
 		File toTest = new File(installDir, "configuration/framework");
 		String configArea = System.getProperty(PROP_CONFIG_AREA);
@@ -53,6 +54,7 @@ public class EclipseLauncherConstantsTest {
 		assertThat(configArea).isEqualTo(toTest.getAbsolutePath());
 		assertThat(frameworkStorage).isEqualTo(toTest.getAbsolutePath());
 		assertThat(storageDir).isEqualTo(toTest.getAbsolutePath());
+		assertThat(eclipseLauncherConstants.passThrough).isEmpty();
 	}
 	
 	@Test

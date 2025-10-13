@@ -22,6 +22,7 @@ import java.security.ProtectionDomain;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -65,10 +66,9 @@ public class EclipseLauncherConstants {
 	public EclipseLauncherConstants(String[] originalArgs) {
 		debug = Boolean.getBoolean(LAUNCH_TRACE);
 		commands = originalArgs;
+		passThrough = new ArrayList<>();
 		if(originalArgs.length > 0) {
-
 			Queue<String> args = new ArrayDeque<>(Arrays.asList(originalArgs));
-			passThrough = new ArrayList<>();
 			while (!args.isEmpty()) {
 				// check for args without parameters (i.e., a flag arg)
 				// check if debug should be enabled for the entire platform
