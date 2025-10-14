@@ -19,9 +19,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Queue;
+import java.util.function.Consumer;
 
 import org.gecko.bnd.eclipse.launcher.util.CommonUtil;
 import org.osgi.framework.Constants;
@@ -50,196 +56,181 @@ public class EclipseLauncherConstants {
 	public String nl;
 	public String configArea;
 	public URL installationLocation;
+	public List<String> passThrough;
 
 	//BND collcts its classpath for the actuall Launcher from an entry in the Manifest and expects everything to be in the executable jar or somehwere close by.
 	//This extra classpath should allow for some more flexibility 
 	public List<String> propBasedRunPath = new LinkedList<>();
 	private boolean clean = false;
 	
-	public EclipseLauncherConstants(String[] args) {
+	public EclipseLauncherConstants(String[] originalArgs) {
 		debug = Boolean.getBoolean(LAUNCH_TRACE);
-		commands = args;
-		if(args.length > 0) {
-			int[] configArgs = new int[args.length];
-			configArgs[0] = -1; // need to initialize the first element to something that could not be an index.
-			int configArgIndex = 0;
-			for (int i = 0; i < args.length; i++) {
-				boolean found = false;
+		commands = originalArgs;
+		passThrough = new ArrayList<>();
+		if(originalArgs.length > 0) {
+			Queue<String> args = new ArrayDeque<>(Arrays.asList(originalArgs));
+			while (!args.isEmpty()) {
 				// check for args without parameters (i.e., a flag arg)
 				// check if debug should be enabled for the entire platform
-				if (args[i].equalsIgnoreCase(DEBUG)) {
-					debug = true;
-					// passed thru this arg (i.e., do not set found = true)
+				String key = args.remove();
+				if (!key.startsWith("-")) { //$NON-NLS-1$
+					passThrough.add(key);
 					continue;
 				}
-	
-				// look for and consume the nosplash directive.  This supercedes any
-				// -showsplash command that might be present.
-				if (args[i].equalsIgnoreCase(NOSPLASH)) {
-					CommonUtil.log(getClass(), "Found no Splash");
-					System.setProperty(NOSPLASH, "true");
-					found = true;
-				}
+				boolean processed = false;
+				switch (key.toLowerCase(Locale.ROOT)) {
 
-				// look for and consume the showsplash directive.
-				if (args[i].equalsIgnoreCase(SHOWSPLASH)) {
-					System.setProperty(SHOWSPLASH, "true");
-					found = true;
-				}
+					// Args that would be processed by org.eclipse.equinox.launcher.Main.
+					// Cover them all, even if we ignore them:
 
-				// look for and consume the initialize directive.
-				if (args[i].equalsIgnoreCase(INITIALIZE)) {
-					initialize = true;
-					found = true;
-				}
+					case DEBUG:
+						debug = true;
+						// processed = false because we want to pass it through. If it has an arg we'll pass that through next time
+						break;
+					case NOSPLASH: // look for and consume the nosplash directive.
+						// This supercedes any -showsplash command that might be present.
+						CommonUtil.log(getClass(), "Found no Splash");
+						System.setProperty(NOSPLASH, "true");
+						processed = true;
+						break;
+					case NOEXIT:
+						System.setProperty(PROP_NOSHUTDOWN, "true"); //$NON-NLS-1$
+						// processed = false because we want to pass it through
+						break;
+					case APPEND_VMARGS:
+					case OVERRIDE_VMARGS:
+						//just consume the --launcher.overrideVmargs and --launcher.appendVmargs
+						processed = true;
+						break;
+					case INITIALIZE: // check if this is initialization pass
+						initialize = true;
+						passThrough.add(key); // pass thru this arg
+						processed = true;
+						break;
+					case DEV: // check if development mode should be enabled for the entire platform
+						// processed = false because we want to pass it through. If it has an arg we'll pass that through next time
+						break;
+					case SHOWSPLASH: // look for the command to use to show the splash screen
+						System.setProperty(SHOWSPLASH, "true");
+						consumeParameter(args, arg -> { //consume optional parameter for showsplash
+							System.setProperty(PROP_SPLASHLOCATION, arg);
+						});
+						processed = true;
+						break;
+					case PROTECT:
+						// Currently not supported in Gecko
+						args.remove(); //consume next parameter
+						processed = true;
+						break;
+					case VMARGS:
+						// look for the VM args arg. We have to do that before looking to see
+						// if the next element is a -arg as the thing following -vmargs may in
+						// fact be another -arg.
+						vmargs = args.toArray(new String[0]);
+						args.clear(); // abort the loop after this
+						processed = true;
+						break;
+					// All keys below expect a suitable parameter and are ignored (and passed-through) if no value is available
+					case FRAMEWORK:
+						processed = consumeParameter(args, arg -> { // look for the framework to run
+							framework = arg;
+						});
+						break;
+					case OS:
+						// Supplied by the native executable. Pass through along with its arg
+						break;
+					case WS:
+						// Supplied by the native executable. Pass through along with its arg
+						break;
+					case ARCH:
+						// Supplied by the native executable. Pass through along with its arg
+						break;
+					case INSTALL:
+						processed = consumeParameter(args, arg -> { // look for explicitly set install root
+							// Consume the arg here to ensure that the launcher and Eclipse get the
+							// same value as each other.
+							System.setProperty(PROP_INSTALL_AREA, arg);
+						});
+						break;
+					case CONFIGURATION:
+						passThrough.add(key);
+						processed = consumeParameter(args, arg -> { // look for the configuration to use.
+							configArea = arg;
+							passThrough.add(arg); // also pass the arg through
+						});
+						break;
+					case EXITDATA:
+						processed = consumeParameter(args, arg -> {
+							exitData = arg;
+						});
+						break;
+					case NAME:
+						processed = consumeParameter(args, arg -> { // look for the name to use by the launcher
+							System.setProperty(PROP_LAUNCHER_NAME, arg);
+						});
+						break;
+					case STARTUP:
+						processed = consumeParameter(args, arg -> { // look for the startup jar used
+							// not doing anything with this right now, but still consume it
+							//startup = arg;
+						});
+						break;
+					case LAUNCHER:
+						passThrough.add(key);
+						processed = consumeParameter(args, arg -> { // look for the launcher location
+							System.setProperty(PROP_LAUNCHER, arg);
+							passThrough.add(arg);
+						});
+						break;
+					case LIBRARY:
+						processed = consumeParameter(args, arg -> {
+							library = arg;
+						});
+						break;
+					case ENDSPLASH:
+						processed = consumeParameter(args, arg -> { // look for the command to use to end the splash screen
+							endSplash = arg;
+						});
+						break;
+					case VM:
+						processed = consumeParameter(args, arg -> { // look for the VM location arg
+							vm = arg;
+						});
+						break;
+					case NL:
+						passThrough.add(key);
+						processed = consumeParameter(args, arg -> { // look for the nl setting
+							nl = arg;
+							passThrough.add(arg);
+						});
+						break;
 
-				// look for and consume the initialize directive.
-				if (args[i].equalsIgnoreCase(CLEAN)) {
-					clean = true;
-					found = true;
-				}
-	
-				// look for the command to use to show the splash screen
-//				if (args[i].equalsIgnoreCase(SHOWSPLASH)) {
-//					showSplash = true;
-//					found = true;
-//					//consume optional parameter for showsplash
-//					if (i + 1 < args.length && !args[i + 1].startsWith("-")) { //$NON-NLS-1$
-//						configArgs[configArgIndex++] = i++;
-//						splashLocation = args[i];
-//					}
-//				}
-//	
-				// look for the command to use to show the splash screen
-	//			if (args[i].equalsIgnoreCase(PROTECT)) {
-	//				found = true;
-	//				//consume next parameter
-	//				configArgs[configArgIndex++] = i++;
-	//				if (args[i].equalsIgnoreCase(PROTECT_MASTER) || args[i].equalsIgnoreCase(PROTECT_BASE)) {
-	//					protectBase = true;
-	//				}
-	//			}
-	
-				// done checking for args.  Remember where an arg was found 
-				if (found) {
-					configArgs[configArgIndex++] = i;
-					continue;
-				}
-	
-				// look for the VM args arg.  We have to do that before looking to see
-				// if the next element is a -arg as the thing following -vmargs may in
-				// fact be another -arg.
-				if (args[i].equalsIgnoreCase(VMARGS)) {
-					// consume the -vmargs arg itself
-					args[i] = null;
-					i++;
-					vmargs = new String[args.length - i];
-					for (int j = 0; i < args.length; i++) {
-						vmargs[j++] = args[i];
-						args[i] = null;
-					}
-					continue;
-				}
-	
-				// check for args with parameters. If we are at the last argument or if the next one
-				// has a '-' as the first character, then we can't have an arg with a parm so continue.
-				if (i == args.length - 1 || args[i + 1].startsWith("-")) //$NON-NLS-1$
-					continue;
-				String arg = args[++i];
-	
-				// look for the name to use by the launcher
-				if (args[i - 1].equalsIgnoreCase(NAME)) {
-					System.getProperties().put(PROP_LAUNCHER_NAME, arg);
-					found = true;
-				}
-	
-				// look for the startup jar used 
-				if (args[i - 1].equalsIgnoreCase(STARTUP)) {
-					//not doing anything with this right now, but still consume it
-					//startup = arg;
-					found = true;
-				}
-	
-				// look for the launcher location
-				if (args[i - 1].equalsIgnoreCase(LAUNCHER)) {
-					//not doing anything with this right now, but still consume it
-	//				launcher = arg;
-					System.getProperties().put(PROP_LAUNCHER, arg);
-					found = true;
-				}
-	
-				
-				//XXX MANDATORY
-				if (args[i - 1].equalsIgnoreCase(LIBRARY)) {
-					library = arg;
-					found = true;
-				}
+					// Equinox doesn't have a case for this
+					case CLEAN:
+						clean = true;
+						// processed = false because we want to pass it through
+						break;
 
-				//XXX MANDATORY
-				if (args[i - 1].equalsIgnoreCase(LAUNCHER_PROPERTIES)) {
-					launcherProperties = arg;
-					found = true;
+					// Args that originate from bnd and are not recognised by standard Eclipse:
+
+					//XXX MANDATORY
+					case LAUNCHER_PROPERTIES:
+						processed = consumeParameter(args, arg -> {
+							launcherProperties = arg;
+						});
+						break;
+					//XXX MANDATORY
+					case PROP_RUNPATH:
+						processed = consumeParameter(args, arg -> {
+							propBasedRunPath.addAll(Arrays.asList(arg.split(",")));
+						});
+						break;
+					default:
+						break;
+				};
+				if (!processed) {
+					passThrough.add(key);
 				}
-	
-				//XXX MANDATORY
-				if (args[i - 1].equalsIgnoreCase(PROP_RUNPATH)) {
-					String runPath = arg;
-					propBasedRunPath.addAll(Arrays.asList(runPath.split(",")));
-					found = true;
-				}
-	
-				//XXX MANDATORY if A Splashscreen needs showing
-//				if (args[i - 1].equalsIgnoreCase(PROP_SPLASHLOCATION)) {
-//					splashLocation = arg;
-//					found = true;
-//				}
-	
-				//XXX if no Splashlocation is set, we might use a SplashPath
-//				if (args[i - 1].equalsIgnoreCase(PROP_SPLASHPATH)) {
-//					splashPath = arg;
-//					found = true;
-//				}
-	
-				//XXX the language setting used to determine the splash image  
-				if (args[i - 1].equalsIgnoreCase(NL)) {
-					nl = arg;
-					found = true;
-				}
-	
-				
-				
-				if (args[i - 1].equalsIgnoreCase(NL)) {
-					nl = arg;
-					found = true;
-				}
-	
-				// look for the configuration location .  
-				if (args[i - 1].equalsIgnoreCase(CONFIGURATION)) {
-					configArea = arg;
-					found = true;
-				}
-	
-				// look for the command to use to end the splash screen
-				if (args[i - 1].equalsIgnoreCase(ENDSPLASH)) {
-					endSplash = arg;
-					found = true;
-				}
-	
-				// done checking for args.  Remember where an arg was found 
-				if (found) {
-					configArgs[configArgIndex++] = i - 1;
-					configArgs[configArgIndex++] = i;
-				}
-			}
-			// remove all the arguments consumed by this argument parsing
-			String[] passThruArgs = new String[args.length - configArgIndex - (vmargs == null ? 0 : vmargs.length + 1)];
-			configArgIndex = 0;
-			int j = 0;
-			for (int i = 0; i < args.length; i++) {
-				if (i == configArgs[configArgIndex])
-					configArgIndex++;
-				else if (args[i] != null)
-					passThruArgs[j++] = args[i];
 			}
 		}
 		installationLocation = getInstallLocation();
@@ -248,6 +239,15 @@ public class EclipseLauncherConstants {
 		handleConfigArea();
 		System.getProperties().putIfAbsent("launch.keep", !clean + "");
 		
+	}
+
+	private static boolean consumeParameter(Queue<String> arguments, Consumer<String> consumer) {
+		// If we are at the last argument or if the next one has a '-' as the first character, then we can't have an arg with a parameter
+		if (!arguments.isEmpty() && !arguments.peek().startsWith("-")) { //$NON-NLS-1$
+			consumer.accept(arguments.remove());
+			return true;
+		}
+		return false;
 	}
 
 	/**
