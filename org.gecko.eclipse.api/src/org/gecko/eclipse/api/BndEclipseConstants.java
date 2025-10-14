@@ -1,13 +1,15 @@
 /**
- * Copyright (c) 2012 - 2022 Data In Motion and others.
- * All rights reserved. 
- * 
- * This program and the accompanying materials are made available under the terms of the 
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
- * 
+ * Copyright (c) 2012 - 2025 Data In Motion and others.
+ * All rights reserved.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
  * Contributors:
- *      Data In Motion - initial API and implementation
+ *     Data In Motion - initial API and implementation
  */
 package org.gecko.eclipse.api;
 
@@ -58,7 +60,14 @@ public interface BndEclipseConstants {
 	public static final String ENDSPLASH = "-endsplash"; //$NON-NLS-1$
 	public static final String SPLASH_IMAGE = "splash.bmp"; //$NON-NLS-1$
 	public static final String STARTUP = "-startup"; //$NON-NLS-1$
-	
+	public static final String APPEND_VMARGS = "--launcher.appendvmargs"; //$NON-NLS-1$
+	public static final String OVERRIDE_VMARGS = "--launcher.overridevmargs"; //$NON-NLS-1$
+	public static final String PROTECT = "-protect"; //$NON-NLS-1$
+	public static final String FRAMEWORK = "-framework"; //$NON-NLS-1$
+	public static final String INSTALL = "-install"; //$NON-NLS-1$
+	public static final String EXITDATA = "-exitdata"; //$NON-NLS-1$
+	public static final String VM = "-vm"; //$NON-NLS-1$
+
 	public static final String PROP_BUNDLES = "osgi.bundles"; //$NON-NLS-1$
 	public static final String PROP_BUNDLES_STARTLEVEL = "osgi.bundles.defaultStartLevel"; //$NON-NLS-1$ //The start level used to install the bundles
 	public static final String PROP_EXTENSIONS = "osgi.framework.extensions"; //$NON-NLS-1$

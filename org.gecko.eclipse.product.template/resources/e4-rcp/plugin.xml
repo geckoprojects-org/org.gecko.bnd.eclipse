@@ -9,7 +9,11 @@
             name="{{eclipse.product.id}}">
          <property
                name="appName"
-               value="{{eclipse.product.id}}">
+               value="Eclipse RCP Application">
+         </property>
+         <property
+               name="applicationCSS"
+               value="platform:/plugin/{{projectName}}/css/default.css">
          </property>
       </product>
    </extension>

@@ -1,14 +1,16 @@
 /**
- * Copyright (c) 2012 - 2022 Data In Motion and others.
- * All rights reserved. 
- * 
- * This program and the accompanying materials are made available under the terms of the 
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
- * 
+ * Copyright (c) 2012 - 2025 Data In Motion and others.
+ * All rights reserved.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
  * Contributors:
- *      BND - initial API and implementation as ProjectLauncher
- *      Data In Motion - initial API and implementation
+ *     BND - initial API and implementation as ProjectLauncher
+ *     Data In Motion - initial API and implementation
  */
 package org.gecko.bnd.eclipse.launcher.util;
 
