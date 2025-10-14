@@ -1,4 +1,3 @@
--library: enableOSGi-Test 
 -buildpath: \
 	slf4j.api;version=latest,\
 	aQute.libg;version=latest,\
