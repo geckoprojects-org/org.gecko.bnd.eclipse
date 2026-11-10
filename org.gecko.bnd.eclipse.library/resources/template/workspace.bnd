@@ -1,10 +1,8 @@
 -plugin.bnd-Eclipse:\
-	aQute.bnd.repository.osgi.OSGiRepository;\
-		name="Eclipse 2020-06";\
-		locations="https://bndtools.jfrog.io/bndtools/bnd-build/eclipse/4.16/index.xml.gz";\
-		poll.time=-1;\
-		cache="${workspace}/cnf/cache/stable/Eclipse-2020-06"
-        
+	aQute.bnd.repository.p2.provider.P2Repository;\
+		name="Eclipse 4.41 (2026-09)";\
+		url="https://download.eclipse.org/eclipse/updates/4.41/R-4.41-202608281142/"
+
 -plugin.bnd.eclipse.central: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
 		snapshotUrl=https://central.sonatype.com/repository/maven-snapshots/; \

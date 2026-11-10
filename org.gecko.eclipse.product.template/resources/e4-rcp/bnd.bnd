@@ -9,8 +9,8 @@ Bundle-Version: 1.0.0.SNAPSHOT
 	
 -buildpath: \
 	osgi.cmpn;version='7.0.0',\
-	javax.inject;version=latest,\
-	javax.annotation;version=latest,\
+	jakarta.inject.jakarta.inject-api;version='2.0',\
+	jakarta.annotation-api;version='3.0',\
 	org.eclipse.equinox.common;version=latest,\
 	org.eclipse.equinox.registry;version=latest,\
 	org.eclipse.core.commands;version=latest,\

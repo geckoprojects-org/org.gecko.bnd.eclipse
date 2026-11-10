@@ -1,3 +1,4 @@
 <form>
-	<p>Creates a bndrun file that uses the gecko equinox launcher and allows for a product export</p>
+	<p>Creates a bndrun file that launches Equinox like the Eclipse launcher does and allows to export a native Eclipse product (executable JAR).</p>
+	<p>It puts the Gecko launcher plugin and the splash screen on the runpath and requires org.gecko.eclipse.compatibility, which starts the configured eclipse.application or eclipse.product. Set those as run properties and resolve the file.</p>
 </form>

@@ -19,7 +19,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
-import org.eclipse.equinox.launcher.JNIBridge;
+import org.gecko.bnd.eclipse.launcher.util.SplashBridge;
 import org.eclipse.osgi.service.runnable.StartupMonitor;
 import org.gecko.bnd.eclipse.launcher.util.DefaultStartupMonitor;
 import org.gecko.bnd.eclipse.launcher.util.SplashHandler;
@@ -39,7 +39,7 @@ public class SplashScreenActivator implements BundleActivator {
 	public static final String IMMEDIATE = "AFTER_FRAMEWORK_INIT";
 	
 	private SplashHandler splashHandler;
-	private JNIBridge bridge;
+	private SplashBridge bridge;
 
 	private ServiceRegistration<Runnable> splashHandlerRegistry;
 
@@ -60,7 +60,12 @@ public class SplashScreenActivator implements BundleActivator {
 		String launcherLib = context.getProperty(PROP_LAUNCHER_LIBRARY);
 		if(launcherLib != null) {
 			logger.fine("Using launcher library " + launcherLib);
-			bridge = new JNIBridge(launcherLib);
+			try {
+				bridge = new SplashBridge(launcherLib);
+			} catch (ReflectiveOperationException | RuntimeException e) {
+				logger.warning("Cannot access the native launcher bridge, no splash will be shown: " + e);
+				return;
+			}
 			String splashLocation = context.getProperty(PROP_SPLASHLOCATION);
 			if(splashLocation != null) {
 				String realSplashLocation = splashLocation;

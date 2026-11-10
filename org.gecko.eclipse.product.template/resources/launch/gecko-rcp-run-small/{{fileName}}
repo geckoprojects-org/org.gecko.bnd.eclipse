@@ -1,6 +1,6 @@
 # This can run with Felix too, but we 
 -runfw: org.eclipse.osgi
--runee: JavaSE-11
+-runee: JavaSE-21
 
 # You need this at least at export time, so you can determine you system specific launcher
 -runsystemcapabilities: ${native_capability}

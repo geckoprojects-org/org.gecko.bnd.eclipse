@@ -1,3 +1,9 @@
 <form>
-	<p>Creates a Eclipse E4 RCP Application that can be started using Bndtools</p>
+	<p>Creates an Eclipse 3.x style RCP example application (workbench advisor, view and perspective; Eclipse 4.41, Java 21) that can be launched and exported as a native Eclipse product with Bndtools.</p>
+	<p>The project contains these run descriptors:</p>
+	<li style="bullet"><b>launch_base.bndrun</b> - the OS independent part. Add your run requirements here and resolve only this file.</li>
+	<li style="bullet"><b>launch_win32.bndrun</b> - run and export on Windows x86_64.</li>
+	<li style="bullet"><b>launch_linux.bndrun</b> - run and export on Linux x86_64 (GTK).</li>
+	<li style="bullet"><b>launch_mac.bndrun</b> - macOS fragments (product export for macOS is not supported yet).</li>
+	<p>Export the OS specific file as an executable JAR to get the product with the native launcher. Requires the geckoBndEclipse workspace library.</p>
 </form>

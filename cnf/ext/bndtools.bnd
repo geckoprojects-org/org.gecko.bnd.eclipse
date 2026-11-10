@@ -1,15 +1,12 @@
-bndbaseversion: 7.0.0
+bndbaseversion: 7.4.0
 
-bndversion: ${if;${def;release.dir};\
-              ${bndbaseversion};\
-              ${bndbaseversion}-SNAPSHOT\
-          }
+# Always build against the released bnd, independent of snapshot or release builds
+bndversion: ${bndbaseversion}
 
 -plugin.bnd: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository;\
-		releaseUrl=https://bndtools.jfrog.io/bndtools/update-latest/;\
-		snapshotUrl=https://bndtools.jfrog.io/bndtools/update-snapshot/;\
+		releaseUrl=https://repo.maven.apache.org/maven2/;\
 		index=${.}/bndtools.maven;\
-		poll_timeout=-1;\
+		readOnly=true;\
+		poll.time=-1;\
 		name='BND Tools'
-		

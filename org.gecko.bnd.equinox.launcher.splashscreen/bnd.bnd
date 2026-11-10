@@ -1,7 +1,6 @@
 -buildpath: \
-	org.eclipse.equinox.launcher;version=latest,\
 	org.eclipse.osgi;version=latest,\
-	org.eclipse.swt.gtk.linux.x86_64;version='3.114',\
+	org.eclipse.swt.gtk.linux.x86_64;version='3.135',\
 	org.gecko.eclipse.api;version=project
 
 Private-Package: org.gecko.bnd.equinox.launcher.splashscreen,\
