@@ -22,3 +22,12 @@ javac.target: 21
 dimcBaselining: false
 github-project: org.gecko.bnd.eclipse
 -groupid: org.geckoprojects.bnd.eclipse
+
+# Nexus login from the environment (Jenkins credential dim-nexus); local files still apply.
+-connection-settings: \
+	-bnd,\
+	-maven,\
+	server; \
+		id=devel.data-in-motion.biz; \
+		username="${env;NEXUS_USERNAME;}"; \
+		password="${env;NEXUS_PASSWORD;}"

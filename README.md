@@ -253,7 +253,8 @@ Group id `org.geckoprojects.bnd.eclipse`, released to Maven Central, snapshots i
 ```
 
 `snapshot` is the development branch (publishes `-SNAPSHOT` versions), `main` holds the latest release. Releases
-are built by Jenkins; the release setup comes from the `geckoDIMC` bnd library.
+are built by Jenkins; the release setup comes from the `geckoDIMC` bnd library. The Nexus login is the Jenkins
+credential `dim-nexus`, passed to bnd as `NEXUS_USERNAME`/`NEXUS_PASSWORD` (`-connection-settings` in `cnf/build.bnd`).
 
 ## License
 

@@ -15,7 +15,9 @@ pipeline  {
             }
             steps {
                 echo "I am building on ${env.BRANCH_NAME}"
-                sh "./gradlew clean build release -Drelease.dir=$JENKINS_HOME/repo.gecko/release/org.gecko.bnd.eclipse --info --stacktrace -Dmaven.repo.local=${WORKSPACE}/.m2"
+                withCredentials([usernamePassword(credentialsId: 'dim-nexus', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh "./gradlew clean build release -Drelease.dir=${WORKSPACE}/cnf/release --info --stacktrace -Dmaven.repo.local=${WORKSPACE}/.m2"
+                }
             }
         }
         stage('Snapshot branch release') {
@@ -24,10 +26,9 @@ pipeline  {
             }
             steps  {
                 echo "I am building on ${env.JOB_NAME}"
-                sh "./gradlew release --info --stacktrace -Dmaven.repo.local=${WORKSPACE}/.m2"
-                sh "mkdir -p $JENKINS_HOME/repo.gecko/snapshot/org.gecko.bnd.eclipse"
-                sh "rm -rf $JENKINS_HOME/repo.gecko/snapshot/org.gecko.bnd.eclipse/*"
-                sh "cp -r cnf/release/* $JENKINS_HOME/repo.gecko/snapshot/org.gecko.bnd.eclipse"
+                withCredentials([usernamePassword(credentialsId: 'dim-nexus', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh "./gradlew release --info --stacktrace -Dmaven.repo.local=${WORKSPACE}/.m2"
+                }
             }
         }
     }
