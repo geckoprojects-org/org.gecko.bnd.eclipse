@@ -1,6 +1,7 @@
 // Available to customize the build
 
-subprojects {
+// all bnd projects, but not the cnf workspace configuration project
+configure(subprojects.findAll { it.name != 'cnf' }) {
     // The bnd plugin applies 'java' later; apply it here so testImplementation exists
     apply plugin: 'java'
 
