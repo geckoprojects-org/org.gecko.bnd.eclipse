@@ -19,6 +19,7 @@ import static org.gecko.eclipse.api.BndEclipseConstants.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +30,16 @@ import org.osgi.framework.Constants;
 public class EclipseLauncherConstantsTest {
 
 	private File installDir;
-	
+
+	private File userHomeDir;
+
 	@BeforeEach
 	public void setUp() throws Exception {
 		installDir = File.createTempFile("install", "dir");
 		System.setProperty(PROP_INSTALL_AREA, installDir.getAbsoluteFile().toURI().toURL().toString());
 		installDir.deleteOnExit();
+
+		userHomeDir = new File(System.getProperty("user.home"));
 	}
 	
 	@AfterEach
@@ -73,11 +78,26 @@ public class EclipseLauncherConstantsTest {
 	}
 
 	@Test
+	public void testConfigSubstituted() {
+		EclipseLauncherConstants constants = new EclipseLauncherConstants(new String[] { CONFIGURATION, "@user.home/test" });
+		File toTest = new File(userHomeDir, "test");
+
+		String configArea = System.getProperty(PROP_CONFIG_AREA);
+		String frameworkStorage = System.getProperty(Constants.FRAMEWORK_STORAGE);
+		String storageDir = System.getProperty(PROP_LAUNCH_STORAGE_DIR);
+		List<String> passThrough = constants.passThrough;
+		assertThat(configArea).isEqualTo(toTest.getAbsolutePath());
+		assertThat(frameworkStorage).isEqualTo(toTest.getAbsolutePath());
+		assertThat(storageDir).isEqualTo(toTest.getAbsolutePath());
+		assertThat(passThrough).isEqualTo(Arrays.asList(CONFIGURATION, toTest.getAbsolutePath()));
+	}
+
+	@Test
 	public void testConfigAbsolut() throws IOException {
 		File conf = File.createTempFile("config", "dir");
 		conf.deleteOnExit();
 		new EclipseLauncherConstants(new String[] {CONFIGURATION, conf.getAbsolutePath()});
-		
+
 		String configArea = System.getProperty(PROP_CONFIG_AREA);
 		String frameworkStorage = System.getProperty(Constants.FRAMEWORK_STORAGE);
 		String storageDir = System.getProperty(PROP_LAUNCH_STORAGE_DIR);
@@ -90,16 +110,30 @@ public class EclipseLauncherConstantsTest {
 	public void testConfigSystemPropRelative() {
 		System.setProperty(PROP_CONFIG_AREA, "test");
 		new EclipseLauncherConstants(new String[] {});
-		
+
 		File toTest = new File(installDir, "test");
 		String configArea = System.getProperty(PROP_CONFIG_AREA);
 		String frameworkStorage = System.getProperty(Constants.FRAMEWORK_STORAGE);
 		String storageDir = System.getProperty(PROP_LAUNCH_STORAGE_DIR);
-		assertThat(configArea).isEqualTo("test");
+		assertThat(configArea).isEqualTo(toTest.getAbsolutePath());
 		assertThat(frameworkStorage).isEqualTo(toTest.getAbsolutePath());
 		assertThat(storageDir).isEqualTo(toTest.getAbsolutePath());
 	}
-	
+
+	@Test
+	public void testConfigSystemPropSubstituted() {
+		System.setProperty(PROP_CONFIG_AREA, "@user.home/test");
+		new EclipseLauncherConstants(new String[] {});
+
+		File toTest = new File(userHomeDir, "test");
+		String configArea = System.getProperty(PROP_CONFIG_AREA);
+		String frameworkStorage = System.getProperty(Constants.FRAMEWORK_STORAGE);
+		String storageDir = System.getProperty(PROP_LAUNCH_STORAGE_DIR);
+		assertThat(configArea).isEqualTo(toTest.getAbsolutePath());
+		assertThat(frameworkStorage).isEqualTo(toTest.getAbsolutePath());
+		assertThat(storageDir).isEqualTo(toTest.getAbsolutePath());
+	}
+
 	@Test
 	public void testConfigSystemPropAbsolut() throws IOException {
 		File conf = File.createTempFile("config", "dir");

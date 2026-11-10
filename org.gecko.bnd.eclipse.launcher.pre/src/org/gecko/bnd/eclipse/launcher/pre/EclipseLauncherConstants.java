@@ -22,7 +22,6 @@ import java.security.ProtectionDomain;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +41,7 @@ public class EclipseLauncherConstants {
 	 * The ID of the Launcher Bundle
 	 */
 	public static final String BUNDLE_ID = "org.gecko.bnd.eclipse.launcher";
-	
+
 	public boolean debug = false;
 	public boolean initialize = false;
 	public String[] vmargs;
@@ -155,8 +154,8 @@ public class EclipseLauncherConstants {
 					case CONFIGURATION:
 						passThrough.add(key);
 						processed = consumeParameter(args, arg -> { // look for the configuration to use.
-							configArea = arg;
-							passThrough.add(arg); // also pass the arg through
+							configArea = arg; // user locations will be replaced later
+							passThrough.add(replaceUserLocations(arg)); // also pass the arg through
 						});
 						break;
 					case EXITDATA:
@@ -250,6 +249,16 @@ public class EclipseLauncherConstants {
 		return false;
 	}
 
+	private static String replaceUserLocations(String path) {
+		if (path.startsWith(USER_HOME)) {
+			path = System.getProperty(PROP_USER_HOME, "") + path.substring(USER_HOME.length());
+		}
+		else if (path.startsWith(USER_DIR)) {
+			path = System.getProperty(PROP_USER_DIR, "") + path.substring(USER_DIR.length());
+		}
+		return path;
+	}
+
 	/**
 	 * OSGi, Equinox and bnd have different styles of handling the configuration are. The default is the {@link Constants#FRAMEWORK_STORAGE}.
 	 * The BND Launcher gets the config area as the "launcher.storage.dir" and will set the {@link Constants#FRAMEWORK_STORAGE} after it created and
@@ -260,8 +269,8 @@ public class EclipseLauncherConstants {
 		configArea = System.getProperty(PROP_CONFIG_AREA, getConfigArea(installationLocation, configArea));
 		configArea = System.getProperty(Constants.FRAMEWORK_STORAGE, configArea);
 		configArea = getConfigArea(installationLocation, configArea);
-		System.getProperties().putIfAbsent(PROP_CONFIG_AREA, configArea);
-		System.getProperties().putIfAbsent(Constants.FRAMEWORK_STORAGE, configArea);
+		System.setProperty(PROP_CONFIG_AREA, configArea);
+		System.setProperty(Constants.FRAMEWORK_STORAGE, configArea);
 		System.setProperty("launch.storage.dir", configArea);
 	}
 	
@@ -269,6 +278,7 @@ public class EclipseLauncherConstants {
 		if(configArea == null) {
 			configArea = "configuration/framework/";
 		}
+		configArea = replaceUserLocations(configArea);
 		File area = new File(configArea);
 		//if it is absolute, we take it as is
 		if (area.isAbsolute()) {
