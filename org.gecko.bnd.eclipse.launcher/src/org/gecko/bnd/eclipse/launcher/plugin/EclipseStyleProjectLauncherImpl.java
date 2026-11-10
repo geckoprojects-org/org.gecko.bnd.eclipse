@@ -141,7 +141,9 @@ public class EclipseStyleProjectLauncherImpl extends ProjectLauncher {
 					project.getWorkspace()
 					.addBasicPlugin(new WorkspaceResourcesRepository(project.getWorkspace()));
 					project.getWorkspace().addBasicPlugin(project.getWorkspace().getWorkspaceRepository());
-					project.getWorkspace().propertiesChanged();
+					// No propertiesChanged() here: addBasicPlugin already registers the plugins, and
+					// re-reading the workspace properties processes the -library includes a second
+					// time ("Cyclic or multiple include"), which breaks the export.
 				}
 			}
 		} catch (Throwable e) {
