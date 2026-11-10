@@ -1,11 +1,28 @@
 // Available to customize the build
 
 subprojects {
-  tasks.withType(Test).configureEach {
-    // Tests are JUnit 5 Jupiter (testpath ${junit} from the fennecTest library)
-    useJUnitPlatform()
-    // Several bnd projects have an empty test folder (only .keep); Gradle 9
-    // would otherwise fail the build because no tests are discovered there.
-    failOnNoDiscoveredTests = false
-  }
+    // The bnd plugin applies 'java' later; apply it here so testImplementation exists
+    apply plugin: 'java'
+
+    // Needed to resolve the JUnit test dependencies below
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(Test).configureEach {
+        // Allow gradle to enable JUnit support in submodules
+        useJUnitPlatform()
+        // Several bnd projects have an empty test folder (only .keep); Gradle 9
+        // would otherwise fail the build because no tests are discovered there.
+        failOnNoDiscoveredTests = false
+    }
+
+    // Add JUnit dependencies for modules that have Gradle tests
+    // (the fennecTest bnd library no longer puts JUnit on the -testpath)
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.14.2'
+        testImplementation 'org.junit.platform:junit-platform-launcher:1.14.4'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.24.0'
+        testImplementation 'org.assertj:assertj-core:3.27.7'
+    }
 }

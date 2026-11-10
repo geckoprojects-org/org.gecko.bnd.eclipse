@@ -7,10 +7,6 @@
 	org.gecko.eclipse.api;version=project,\
 	org.osgi.framework
 
--testpath: \
-	${junit},\
-	junit-platform-launcher;version=latest
-
 -includeresource.base: \
 	@${repo;org.eclipse.equinox.launcher;latest}!/org/eclipse/equinox/launcher/JNIBridge.class
 	
