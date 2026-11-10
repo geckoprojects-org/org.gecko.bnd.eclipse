@@ -1,7 +1,7 @@
 -include: ~launch_base.bndrun
 
--runsystemcapabilities.native: ${native_capability;osname=MacOSX;osversion=10;processor=x86_64}
--runprovidedcapabilities.native: ${native_capability;osname=MacOSX;osversion=10;processor=x86_64}
+-runsystemcapabilities.native: ${native_capability;osname=Mac OS X;osversion=10;processor=x86_64}
+-runprovidedcapabilities.native: ${native_capability;osname=Mac OS X;osversion=10;processor=x86_64}
 
 -runblacklist.mac: \
 	osgi.identity;filter:='(osgi.identity=*win32*)',\

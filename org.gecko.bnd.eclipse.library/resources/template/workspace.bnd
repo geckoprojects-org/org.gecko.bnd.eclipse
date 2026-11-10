@@ -1,11 +1,19 @@
+# Curated Eclipse 4.41 (2026-09) RCP platform from Maven Central. Deliberately not the
+# full Eclipse p2 update site: that one also contains JUnit 6, osgi-test, Mockito etc.
+# and would change what the rest of the consumer workspace resolves.
 -plugin.bnd-Eclipse:\
-	aQute.bnd.repository.p2.provider.P2Repository;\
-		name="Eclipse 4.41 (2026-09)";\
-		url="https://download.eclipse.org/eclipse/updates/4.41/R-4.41-202608281142/"
+	aQute.bnd.repository.maven.provider.MavenBndRepository; \
+		releaseUrl=https://repo.maven.apache.org/maven2/; \
+		index=${.}/eclipse-rcp.maven; \
+		readOnly=true; \
+		poll.time=-1;\
+		name="Eclipse 4.41 RCP"
 
+# Released bundles come from Maven Central. Snapshots are deployed to the
+# Data In Motion Nexus (and possibly Central snapshots).
 -plugin.bnd.eclipse.central: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
-		snapshotUrl=https://central.sonatype.com/repository/maven-snapshots/; \
+		snapshotUrl="https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/,https://central.sonatype.com/repository/maven-snapshots/"; \
 		releaseUrl=https://repo.maven.apache.org/maven2/; \
 		index=${.}/bnd-eclipse-central.maven; \
 		readOnly=true; \

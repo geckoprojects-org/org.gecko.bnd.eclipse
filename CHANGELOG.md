@@ -7,8 +7,11 @@
 - **Java 21** is required, also for the JVM running Bndtools / Gradle (Eclipse 4.41 and the Equinox
   launcher 1.8 are Java 21).
 - **bnd / Bndtools 7.4** or newer.
-- The target platform is **Eclipse 4.41 (2026-09)**. The `geckoBndEclipse` library now adds the
-  Eclipse Platform p2 repository instead of the Eclipse 2020-06 index.
+- The target platform is **Eclipse 4.41 (2026-09)**. Instead of the Eclipse 2020-06 index the
+  `geckoBndEclipse` library now adds a curated set of Eclipse 4.41 RCP bundles from Maven Central
+  (`Eclipse 4.41 RCP` repository). It contains no test frameworks, so it does not change the JUnit,
+  osgi-test or Mockito versions of the consumer workspace (#14). For IDE/PDE bundles add the Eclipse
+  p2 repository yourself.
 - New Maven group id: **`org.geckoprojects.bnd.eclipse`** (1.x: `org.geckoprojects.bnd`).
 
 ### Changes
@@ -24,6 +27,13 @@
   Both use `jakarta.inject`, Java 21 and run bundles resolved against Eclipse 4.41, and come with
   Windows, Linux and macOS run descriptors.
 - Fixed the help pages of the project templates in the Bndtools wizard.
+- The library's `Bnd Eclipse Central` repository finds `-SNAPSHOT` versions in the Data In Motion
+  Nexus, where they are deployed (#15).
+- Exporting a product failed with "Cyclic or multiple include" when the workspace enabled the
+  `geckoBndEclipse` library; the launcher plugin no longer re-reads the workspace properties.
+- Windows run descriptors no longer require `org.eclipse.ui.win32` (an `org.eclipse.ui.ide` fragment
+  that pulled the IDE, p2 and Bouncy Castle into every RCP product); the macOS run descriptors use
+  `osname=Mac OS X`, which bnd's `native_capability` macro accepts.
 
 ### Migrating from 1.x
 
