@@ -12,6 +12,8 @@
 -buildpath+: biz.aQute.launcher;maven-version=1
 
 -testpath: \
+	${junit},\
+	junit-platform-launcher;version=latest,\
 	biz.aQute.bndlib
 
 -builderignore: testresources

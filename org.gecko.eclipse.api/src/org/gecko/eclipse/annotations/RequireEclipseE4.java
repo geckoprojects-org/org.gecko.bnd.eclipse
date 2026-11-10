@@ -26,7 +26,6 @@ import org.osgi.annotation.bundle.Requirement;
  * @author Mark Hoffmann
  * @since 23.09.2019
  */
-@Requirement(namespace="osgi.identity", name="com.google.guava")
 @Requirement(namespace="osgi.identity", name="org.eclipse.equinox.event")
 @Requirement(namespace="osgi.identity", name="org.eclipse.e4.ui.workbench")
 @Target(value={ElementType.PACKAGE, ElementType.TYPE})

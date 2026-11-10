@@ -1,4 +1,4 @@
--plugin.6.Central: \
+-plugin.5.EclipseCentral: \
 	aQute.bnd.repository.maven.provider.MavenBndRepository; \
 		releaseUrl=https://repo.maven.apache.org/maven2/; \
 		index=${.}/eclipse.maven; \

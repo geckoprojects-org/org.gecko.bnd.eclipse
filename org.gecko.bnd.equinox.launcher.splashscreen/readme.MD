@@ -1,29 +1,33 @@
 # SplashScreen
 
-In Order to show a SplashScreen the ```org.gecko.bnd.equinox.launcher.splashscreen```must be part of the projects runpath. This bundle displays the Splash screen set via the **splash.location** property right after the framework start and registers a SplashHandler as ```Runnable``` service in the Framework. When the Runnable is executed, the  SplashScreen will be taken down. 
+To show a splash screen, `org.gecko.bnd.equinox.launcher.splashscreen` must be on the `-runpath` of the bndrun.
+Right after the framework start, the bundle displays the BMP image configured with the **splash.location** property,
+using the native Eclipse launcher library. The splash is therefore only shown when the application is started
+with the native launcher of an exported product (the `launcher.library` property must be set).
 
-**Please Note:**  Somebody needs to call the run method at some point. If not, the SplashScreen will be displayed all the time.
+The splash is taken down
 
+- automatically when an Eclipse application reports itself as running: the bundle registers an
+  `org.eclipse.osgi.service.runnable.StartupMonitor`, which Equinox calls when the application is running
+  (this is the case for E4 applications started by `org.gecko.eclipse.compatibility`), or
+- when the registered `Runnable` service (service property `splash=true`) is executed.
 
+**Please note:** for applications that do not report themselves as running, somebody needs to call the `Runnable`
+service at some point. Otherwise the splash screen is displayed all the time.
+
+The splash is not shown if the `--nosplash` property is `true`.
 
 ## Example for a bndrun
 
 ```properties
 -runpath: \
+	org.gecko.bnd.eclipse.launcher.plugin,\
 	org.gecko.bnd.equinox.launcher.splashscreen
 
--runbundles: \
-	org.apache.felix.gogo.command;version='[1.0.2,1.0.3)',\
-	org.apache.felix.gogo.runtime;version='[1.1.0,1.1.1)',\
-	org.apache.felix.gogo.shell;version='[1.1.0,1.1.1)',\
-	<yourBundleThatRemovesTheSplash>;version='[1.0.0,1.0.1)'
-
-
-
--runproperties:\
+-runproperties.splash: \
 	splash.location=splash/splash.bmp
-# this includeresource, will cause the exporter to package the given splash 	
+
+# this includeresource causes the exporter to package the given splash image
 -includeresource: \
 	/splash/splash.bmp=${.}/splash/splash.bmp
 ```
-

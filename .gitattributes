@@ -73,3 +73,7 @@ LICENSE crlf=input
 *.key binary
 *.numbers binary
 *.pages binary
+*.exe binary
+*.bmp binary
+**/MacOS/launcher binary
+**/linux/*/launcher binary

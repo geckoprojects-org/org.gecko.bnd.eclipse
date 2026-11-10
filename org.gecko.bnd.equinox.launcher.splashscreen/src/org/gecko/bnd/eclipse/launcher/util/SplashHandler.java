@@ -19,12 +19,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-import org.eclipse.equinox.launcher.JNIBridge;
 
 public class SplashHandler extends Thread {
 
 	private final static Logger	logger = Logger.getLogger("BndSplashScreen");
-	private final JNIBridge bridge;
+	private final SplashBridge bridge;
 
 	private final AtomicBoolean splashDown = new AtomicBoolean(false);
 	private InternalThread internalThread;
@@ -33,7 +32,7 @@ public class SplashHandler extends Thread {
 	 * @param thread
 	 * 
 	 */
-	public SplashHandler(JNIBridge bridge) {
+	public SplashHandler(SplashBridge bridge) {
 		this.bridge = bridge;
 	}
 
@@ -46,7 +45,7 @@ public class SplashHandler extends Thread {
 	private static final class InternalThread implements Runnable {
 
 		private SplashHandler handler;
-		private JNIBridge bridge;
+		private SplashBridge bridge;
 		private String splashLocation;
 
 		private CountDownLatch latch = new CountDownLatch(1);
@@ -54,7 +53,7 @@ public class SplashHandler extends Thread {
 		/**
 		 * Creates a new instance.
 		 */
-		public InternalThread(SplashHandler handler, JNIBridge bridge, String splashLocation) {
+		public InternalThread(SplashHandler handler, SplashBridge bridge, String splashLocation) {
 			this.handler = handler;
 			this.bridge = bridge;
 			this.splashLocation = splashLocation;

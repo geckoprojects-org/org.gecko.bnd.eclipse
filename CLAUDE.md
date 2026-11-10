@@ -2,97 +2,45 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## What this is
 
-This is the Gecko BND RCP Exporter/Launcher project that enables pure OSGi projects and BND to work with Eclipse Equinox and the Eclipse RCP Framework. It provides:
+A bnd/Bndtools workspace that lets you develop, launch and export **Eclipse / Eclipse RCP (E3 and E4) applications with bnd** instead of PDE/Tycho. It ships a custom bnd launcher plugin that produces an Eclipse-style product layout (native launcher executable, `.ini`, `plugins/`, `configuration/`), runtime bundles that emulate what Eclipse's `EclipseStarter` normally does, and Bndtools project/bndrun templates. User docs: `README.md`, release notes + migration: `CHANGELOG.md`.
 
-- A BND Plugin for product exports using the native Equinox launcher
-- Splashscreen support for RCP applications
-- In-framework startup of Eclipse Product/Application
-- Eclipse E3/E4 RCP application templates
+## Build
 
-The project uses BND workspace model and creates exports that work differently from standard PDE product exports, using a more OSGi-standard approach.
+Gradle 9 with the `biz.aQute.bnd.workspace` plugin (bnd 7.4.0 in `gradle.properties`; the bnd jars on the buildpath are pinned via `bndbaseversion` in `cnf/ext/bndtools.bnd` — keep both in sync). Requires **JDK 21+** (Eclipse 4.41 / Equinox launcher 1.8 are Java 21). Each top-level `org.gecko.*` directory is a bnd project; `cnf/` is the workspace config.
 
-## Build Commands
-
-### Primary Build Commands
-```bash
-# Clean and build all modules
-./gradlew clean build
-
-# Build and create release artifacts
-./gradlew clean build release
-
-# Release to specific directory (used by CI)
-./gradlew clean build release -Drelease.dir=<path>
-
-# Build with Maven local repository
-./gradlew build -Dmaven.repo.local=<path>
+```sh
+./gradlew build                                  # compile, test, package all projects
+./gradlew :org.gecko.bnd.eclipse.launcher:build  # single project
+./gradlew :org.gecko.bnd.eclipse.launcher.pre:test --tests '*EclipseLauncherConstantsTest'   # single test
+./gradlew release                                # snapshot release into cnf/release
+./gradlew release -Drelease.dir=<dir>            # real release (no -SNAPSHOT) into <dir>
 ```
 
-### Development Commands
-```bash
-# Run tests
-./gradlew test
-
-# Check for dependency updates
-./gradlew dependencyUpdates
-
-# Clean workspace
-./gradlew clean
-```
+- `cnf/build.bnd` enables the bnd libraries `geckoDIMC` (manifest defaults, group id handling, release/Maven Central setup, DIM Nexus) and `geckoOSGi-Test` (JUnit 5 / AssertJ / Mockito); their versions are pinned in `cnf/central.maven`. Release and signing behaviour therefore comes from the geckoDIMC library (repo `geckoprojects-org/org.gecko.bnd`), not from this repo.
+- Java target 21 (`cnf/build.bnd`). Tests are JUnit 5: projects with tests put `${junit}` and `junit-platform-launcher` on `-testpath`; `build.gradle` enables `useJUnitPlatform()` and disables Gradle 9's "no tests discovered" failure (several projects have empty test folders — without the JUnit Platform the tests silently would not run).
+- Repositories: `cnf/central.maven` (Maven Central: OSGi, test libs, Eclipse launcher artifacts, bnd libraries) and `cnf/ext/eclipse.maven` (Eclipse 4.41 platform, EMF, Xtext from Maven Central, registered by `cnf/ext/eclipse.bnd`). Repository plugin keys must be unique (`-plugin.5.EclipseCentral` vs `-plugin.6.Central`), otherwise one silently overrides the other.
+- Version: `base-version` in `cnf/ext/version.bnd`; bump it after every release. Group id: `org.geckoprojects.bnd.eclipse`.
+- License headers (EPL-2.0 SPDX style, Data In Motion) are checked in CI per `.licenserc.yaml`; new `.java` files need the header.
 
 ## Architecture
 
-### Core Modules
+The pieces cooperate across three phases — build time (bnd plugin), launch time (pre-launcher), and OSGi runtime (DS components):
 
-1. **org.gecko.bnd.eclipse.launcher** - Main BND launcher that integrates with Eclipse Equinox launcher, replacing the standard BND launcher for Eclipse RCP applications
+1. **`org.gecko.bnd.eclipse.launcher`** — the bnd `ProjectLauncher` plugin (`EclipseStyleProjectLauncherImpl`, built via `-sub` from `plugin.bnd` as `org.gecko.bnd.eclipse.launcher.plugin`, declared with `Launcher-Plugin:`). A user's bndrun puts it on `-runpath`. It handles local launches from Bndtools and `executable()` export, which lays out the product: runbundles under `plugins/`, `configuration/launcher.properties`, the native launcher + `.ini`, and the pre-launcher jar. Supports `-launchericons` and `-preLauncher`. It embeds bnd's `aQute.launcher.*` packages and conditionally p2/PDE internals; `Import-Package: !*` — it must be self-contained.
+2. **`org.gecko.bnd.eclipse.launcher.pre`** — the `Main-Class` jar (`EclipseStyleEmbeddedLauncher`) the native executable starts. It embeds `JNIBridge.class` from `org.eclipse.equinox.launcher` (its native methods are bound to that class name). The launcher plugin embeds the *built* pre jar via `${repo;org.gecko.bnd.eclipse.launcher.pre;latest}`, so the pre project must build first. `EclipseLauncherConstants` translates Eclipse command line args/properties.
+3. **`org.gecko.bnd.equinox.executable`** — resource-only; `-sub` produces `...executable.linux` and `...executable.win32` bundles containing the native `launcher` binaries (`binaries/`) and `eclipse_*.so/.dll` from the Equinox launcher fragments. They advertise `equinox.launcher` capabilities with `osgi.native.*` attributes; the export picks one via `-runsystemcapabilities` / `native_capability`. macOS export is disabled (`macosx.bnd.bak`). The `binaries/` are the `equinox.executable_root.*` p2 artifacts of the same Eclipse release as the launcher fragments in `cnf/central.maven`, and `Equinox-Lib` must match the `eclipse_*` filename in that fragment — update all three together.
+4. **`org.gecko.bnd.equinox.launcher.splashscreen`** — goes on `-runpath`; shows `splash.location` at framework start via `Embedded-Activator`. Since launcher 1.8 `JNIBridge` is package-private, so it is accessed reflectively via `SplashBridge`. The splash goes down via a registered `StartupMonitor` (application running) or the registered `Runnable` service.
+5. **`org.gecko.eclipse.compatibility.equinox.config`** — DS component `EquinoxConfigInitializerImpl` that, once the launcher service (with `launcher.arguments`) is present, sets up the Equinox/Eclipse environment and registers an OSGi `Condition` with id `equinoxConfig`.
+6. **`org.gecko.eclipse.compatibility`** — DS component `EclipsePlatformStarter` gated on that condition; it replaces `EclipseStarter` by tracking `ApplicationDescriptor`s and starting the configured `eclipse.application`/product.
+7. **`org.gecko.eclipse.api`** — shared constants (`BndEclipseConstants`) and `@RequireEclipse*` bundle-requirement annotations that pull Eclipse dependency sets into resolution.
+8. **`org.gecko.eclipse.product.template`** — resource-only Bndtools templates (mustache, `{{...}}` placeholders, metatype per template): `e3-rcp` and `e4-rcp` project templates with `launch_base.bndrun` + OS-specific `launch_linux`/`launch_win32`/`launch_mac` bndruns that `-include` it, and a `gecko-rcp-run-small` bndrun template. The `-runbundles` of `launch_base.bndrun` are resolved against the Eclipse release the library's `workspace.bnd` points to — re-resolve them (generate a project from the template in a scratch workspace) when that changes. Wizard help texts are the `help=` files referenced in `bnd.bnd`.
+9. **`org.gecko.bnd.eclipse.library`** — resource-only bnd **library** (`bnd.library=geckoBndEclipse`) that consumers enable with `-library: geckoBndEclipse`; it contributes `resources/template/workspace.bnd` (Eclipse 4.41 p2 repo + Maven repo) and a generated `bnd-eclipse-central.maven` listing the released bundles. Its `buildpath.bnd` lists every published bundle — update it when adding/removing a bundle.
 
-2. **org.gecko.bnd.eclipse.launcher.pre** - Pre-launcher (EclipseStyleEmbeddedLauncher) that handles the initial bootstrap and can locate bundles in external locations, translating Eclipse-specific properties
+## Conventions
 
-3. **org.gecko.bnd.eclipse.library** - Core library components and utilities for the Eclipse integration
-
-4. **org.gecko.bnd.equinox.executable** - Platform-specific executable components for Linux and Windows
-
-5. **org.gecko.bnd.equinox.launcher.splashscreen** - Splashscreen support that works with any OSGi framework
-
-6. **org.gecko.eclipse.api** - General Eclipse API abstractions and interfaces
-
-7. **org.gecko.eclipse.compatibility** - Compatibility layer for Eclipse/Equinox integration
-
-8. **org.gecko.eclipse.product.template** - BND project templates for Eclipse E3 and E4 RCP applications
-
-9. **test.product** - Example/test Eclipse E4 RCP application demonstrating the launcher capabilities
-
-### Key Configuration Files
-
-- **cnf/build.bnd** - Main BND workspace configuration with repositories (Eclipse 2020-06, Maven Central)
-- **settings.gradle** - Gradle workspace configuration with BND plugin
-- **gradle.properties** - BND version (7.1.0) and snapshot repository configuration
-- **launch_base.bndrun** - Base launch configuration for RCP applications
-
-### Launch Configuration
-
-The project uses `.bndrun` files for application configuration:
-- `-runpath` includes the Eclipse launcher plugin and splashscreen support
-- `-runfw` specifies OSGi framework (Eclipse Equinox)
-- `-runproperties` configure Eclipse-specific properties like product ID and application
-- Support for custom launcher icons (Windows .ico format)
-- Configurable splash screens and configuration areas
-
-### Repository Structure
-
-The project integrates with multiple repositories:
-- Eclipse 2020-06 OSGi repository for Eclipse platform bundles
-- Maven Central for general dependencies
-- Local indexed repository for build artifacts
-- Gecko-specific BOM and OBR repositories for extended functionality
-
-## Development Notes
-
-- Uses Java 8 (javac.source/target: 1.8) but CI builds with OpenJDK 17
-- BND workspace model with OSGi bundle development
-- Templates use Mustache templating engine
-- Supports both Eclipse E3 and E4 RCP application development
-- Native launcher library support for splash screens
-- Configuration area flexibility with multiple override mechanisms
+- `-buildpath` references to other projects in this workspace must use `;version=project`. The library intentionally uses `;version=snapshot` for its own bundles.
+- `EclipseStyleProjectLauncherImpl` inherits `aQute.bnd.osgi.Constants`, whose fields (e.g. `LIBRARY = "-library"`) shadow the static import of `BndEclipseConstants.*` — qualify colliding constants explicitly.
+- `-sub` is used in `launcher` and `equinox.executable`: the produced BSNs come from the sub-`.bnd` files, not the project directory name.
+- Branches: `snapshot` is development (PRs target it), `main` is the latest release. CI: GitHub Actions runs `./gradlew build`; Jenkins (`OpenJDK21` tool) releases on `main` and publishes snapshots from `snapshot`.

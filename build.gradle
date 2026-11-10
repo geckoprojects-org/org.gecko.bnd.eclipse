@@ -1,1 +1,11 @@
 // Available to customize the build
+
+subprojects {
+  tasks.withType(Test).configureEach {
+    // Tests are JUnit 5 Jupiter (testpath ${junit} from the geckoOSGi-Test library)
+    useJUnitPlatform()
+    // Several bnd projects have an empty test folder (only .keep); Gradle 9
+    // would otherwise fail the build because no tests are discovered there.
+    failOnNoDiscoveredTests = false
+  }
+}
