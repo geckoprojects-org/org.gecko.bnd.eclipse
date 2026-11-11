@@ -14,6 +14,9 @@
 -testpath: \
 	biz.aQute.bndlib
 
+# EclipseStyleExportTest exports products, which need the native launcher bundles built
+-dependson: org.gecko.bnd.equinox.executable
+
 -builderignore: testresources
 -sub: *.bnd
 

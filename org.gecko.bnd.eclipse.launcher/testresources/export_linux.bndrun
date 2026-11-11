@@ -1,0 +1,13 @@
+# Used by EclipseStyleExportTest: a minimal product, exported without launching it.
+-runfw: org.eclipse.osgi;version='[3.24.300,4)'
+-runee: JavaSE-21
+-runbundles: org.apache.felix.scr;version='[2.3.0,3)'
+
+-runsystemcapabilities: ${native_capability;osname=Linux;osversion=3.14;processor=x86_64}
+
+# The pre-launcher as built by this workspace (the plugin jar embeds it, the test classes do not)
+-preLauncher: ${workspace}/org.gecko.bnd.eclipse.launcher.pre/generated/org.gecko.bnd.eclipse.launcher.pre.jar
+
+-runprogramargs: -consoleLog
+-runvm: -Dexport.test=true
+-runproperties: eclipse.application=test.application
