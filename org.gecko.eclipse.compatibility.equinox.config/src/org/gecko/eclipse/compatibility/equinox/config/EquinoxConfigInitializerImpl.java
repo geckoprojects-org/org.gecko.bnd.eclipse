@@ -90,6 +90,8 @@ public class EquinoxConfigInitializerImpl implements Condition {
 		allArgs = args;
 		if (args.length == 0) {
 			frameworkArgs = args;
+			// static: do not keep the application arguments of an earlier activation
+			appArgs = args;
 			return;
 		}
 		int[] configArgs = new int[args.length];

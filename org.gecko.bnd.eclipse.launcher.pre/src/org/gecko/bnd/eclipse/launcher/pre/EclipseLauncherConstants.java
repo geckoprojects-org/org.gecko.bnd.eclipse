@@ -42,6 +42,10 @@ public class EclipseLauncherConstants {
 	 */
 	public static final String BUNDLE_ID = "org.gecko.bnd.eclipse.launcher";
 
+	// The argument switch compares the lower case key, so these must be lower case.
+	private static final String NOEXIT_LOWER_CASE = "-noexit"; //$NON-NLS-1$
+	private static final String ECLIPSE_NOSPLASH = "-nosplash"; //$NON-NLS-1$
+
 	public boolean debug = false;
 	public boolean initialize = false;
 	public String[] vmargs;
@@ -87,12 +91,13 @@ public class EclipseLauncherConstants {
 						// processed = false because we want to pass it through. If it has an arg we'll pass that through next time
 						break;
 					case NOSPLASH: // look for and consume the nosplash directive.
+					case ECLIPSE_NOSPLASH: // Eclipse's own spelling
 						// This supercedes any -showsplash command that might be present.
 						CommonUtil.log(getClass(), "Found no Splash");
 						System.setProperty(NOSPLASH, "true");
 						processed = true;
 						break;
-					case NOEXIT:
+					case NOEXIT_LOWER_CASE: // the switch compares the lower case key
 						System.setProperty(PROP_NOSHUTDOWN, "true"); //$NON-NLS-1$
 						// processed = false because we want to pass it through
 						break;

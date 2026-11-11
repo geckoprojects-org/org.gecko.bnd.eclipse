@@ -29,6 +29,10 @@
 - Fixed the help pages of the project templates in the Bndtools wizard.
 - The library's `Bnd Eclipse Central` repository finds `-SNAPSHOT` versions in the Data In Motion
   Nexus, where they are deployed (#15).
+- The pre-launcher recognises `-noExit` (it never matched before) and Eclipse's `-nosplash` in
+  addition to `--nosplash`.
+- An application started without arguments no longer gets the application arguments of an
+  earlier start in the same JVM.
 - Exporting a product failed with "Cyclic or multiple include" when the workspace enabled the
   `geckoBndEclipse` library; the launcher plugin no longer re-reads the workspace properties.
 - Windows run descriptors no longer require `org.eclipse.ui.win32` (an `org.eclipse.ui.ide` fragment
