@@ -250,11 +250,12 @@ public class EclipseLauncherConstants {
 	}
 
 	private static String replaceUserLocations(String path) {
+		// File normalizes the separators, e.g. C:\Users\me + /test -> C:\Users\me\test on Windows
 		if (path.startsWith(USER_HOME)) {
-			path = System.getProperty(PROP_USER_HOME, "") + path.substring(USER_HOME.length());
+			path = new File(System.getProperty(PROP_USER_HOME, ""), path.substring(USER_HOME.length())).getPath();
 		}
 		else if (path.startsWith(USER_DIR)) {
-			path = System.getProperty(PROP_USER_DIR, "") + path.substring(USER_DIR.length());
+			path = new File(System.getProperty(PROP_USER_DIR, ""), path.substring(USER_DIR.length())).getPath();
 		}
 		return path;
 	}

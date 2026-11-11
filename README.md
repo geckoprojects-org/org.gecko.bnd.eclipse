@@ -47,9 +47,14 @@ See the [CHANGELOG](CHANGELOG.md) for release notes and the migration guide to 2
    ```
 
    This adds two repositories to the workspace:
-   - **Eclipse 4.41 (2026-09)** – the Eclipse Platform p2 repository,
-   - **Bnd Eclipse Central** – all bundles of this project from Maven Central (launcher plugin, native
-     executables, splash screen, runtime bundles and templates).
+   - **Eclipse 4.41 RCP** – a curated set of Eclipse 4.41 (2026-09) platform bundles from Maven Central:
+     what an E3/E4 RCP application needs (Equinox, SWT/JFace, workbench, E4, EMF runtime and their
+     dependencies). Test frameworks are deliberately not part of it, so the library does not change
+     which JUnit, osgi-test or Mockito versions the rest of your workspace resolves. If you need more
+     (e.g. the IDE or PDE bundles), add the Eclipse p2 repository or your own index to your workspace.
+   - **Bnd Eclipse Central** – all bundles of this project (launcher plugin, native executables, splash
+     screen, runtime bundles and templates): releases from Maven Central, `-SNAPSHOT` versions from the
+     Data In Motion Nexus.
 
 3. Create a project with the Bndtools wizard and choose **Eclipse E4 RCP Application Template** or
    **Eclipse E3 RCP Application Template** (category *Gecko BND Eclipse RCP Templates*), or add the
@@ -227,14 +232,14 @@ into resolution:
 | `@RequireEclipseCompatibility` | `org.gecko.eclipse.compatibility` (application/product start) |
 | `@RequireEclipseE4` | E4 workbench and Equinox event admin |
 | `@RequireEclipseConsole` | Equinox and Eclipse UI console with Gogo |
-| `@RequireEclipseIDE` | Eclipse SDK, IDE application and Ant |
-| `@RequireEclipsePDE` | PDE UI, build and launching |
+| `@RequireEclipseIDE` | Eclipse SDK, IDE application and Ant (needs the full Eclipse p2 repository) |
+| `@RequireEclipsePDE` | PDE UI, build and launching (needs the full Eclipse p2 repository) |
 | `@RequireEclipseEMF` | EMF SDK (needs an EMF repository in addition to the Eclipse Platform one) |
 
 ## Maven coordinates
 
 Group id `org.geckoprojects.bnd.eclipse`, released to Maven Central, snapshots in the
-[Central snapshot repository](https://central.sonatype.com/repository/maven-snapshots/).
+[Data In Motion Nexus](https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/).
 
 | Artifact | Content |
 |---|---|
