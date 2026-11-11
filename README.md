@@ -257,9 +257,9 @@ Group id `org.geckoprojects.bnd.eclipse`, released to Maven Central, snapshots i
 ./gradlew build      # requires JDK 21+
 ```
 
-`snapshot` is the development branch (publishes `-SNAPSHOT` versions), `main` holds the latest release. Releases
-are built by Jenkins; the release setup comes from the `geckoDIMC` bnd library. The Nexus login is the Jenkins
-credential `dim-nexus`, passed to bnd as `NEXUS_USERNAME`/`NEXUS_PASSWORD` (`-connection-settings` in `cnf/build.bnd`).
+`snapshot` is the development branch (publishes `-SNAPSHOT` versions), `main` holds the latest release. Jenkins
+publishes snapshots and releases (Maven Central via the Sonatype Central Portal); see
+[docs/RELEASING.md](docs/RELEASING.md).
 
 ## License
 
