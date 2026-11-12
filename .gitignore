@@ -4,3 +4,5 @@ generated/
 /.metadata/
 /build/
 /.claude/
+# signed release written by bnd for the Central upload (cnf/ext/release.bnd)
+/dist/

@@ -1,5 +1,8 @@
+# Eclipse Fennec bnd libraries: 'fennec' brings the manifest defaults, the version handling
+# (DO_RELEASE) and the Maven Central signing (releng/central.bnd, active with GPG_PASSPHRASE);
+# 'fennecTest' the test repository. Where a release goes is set in cnf/ext/release.bnd.
 -library: \
-	geckoDIMC,\
+	fennec,\
 	fennecTest
 
 javac.source: 21
@@ -19,15 +22,12 @@ javac.target: 21
 		pretty = true; \
 		local = ${build}/local
 
-dimcBaselining: false
+# Project coordinates
+github-orga:    geckoprojects-org
 github-project: org.gecko.bnd.eclipse
--groupid: org.geckoprojects.bnd.eclipse
+-groupid:       org.geckoprojects.bnd.eclipse
 
-# Nexus login from the environment (Jenkins credential dim-nexus); local files still apply.
--connection-settings: \
-	-bnd,\
-	-maven,\
-	server; \
-		id=devel.data-in-motion.biz; \
-		username="${env;NEXUS_USERNAME;}"; \
-		password="${env;NEXUS_PASSWORD;}"
+# The fennec library is made for Eclipse projects; this one is a Data In Motion project.
+Bundle-Vendor: Data In Motion Consulting GmbH
+# SPDX id plus link: bnd writes the link as the license <url> of the pom, which Maven Central checks.
+Bundle-License: EPL-2.0;description="Eclipse Public License 2.0";link="https://www.eclipse.org/legal/epl-2.0/"
