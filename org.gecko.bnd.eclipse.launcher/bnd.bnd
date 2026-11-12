@@ -12,10 +12,16 @@
 -buildpath+: biz.aQute.launcher;maven-version=1
 
 -testpath: \
-	biz.aQute.bndlib
+	biz.aQute.bndlib,\
+	org.eclipse.equinox.app;version=latest,\
+	org.eclipse.osgi;version=latest
 
-# EclipseStyleExportTest exports products, which need the native launcher bundles built
--dependson: org.gecko.bnd.equinox.executable
+# EclipseStyleExportTest and EclipseStyleLaunchSmokeTest export products, which need the native
+# launcher bundles built; the smoke test also starts one with the compatibility bundles.
+-dependson: \
+	org.gecko.bnd.equinox.executable,\
+	org.gecko.eclipse.compatibility,\
+	org.gecko.eclipse.compatibility.equinox.config
 
 -builderignore: testresources
 -sub: *.bnd
