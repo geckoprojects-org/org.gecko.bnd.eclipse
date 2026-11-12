@@ -1,0 +1,25 @@
+# The headless product of EclipseStyleLaunchSmokeTest, included by smoke_<os>.bndrun. The test adds
+# the bundle with the application (smoke.app) and the marker file (smoke.marker).
+-runfw: org.eclipse.osgi;version='[3.24.300,4)'
+-runee: JavaSE-21
+# as in the e3-rcp/e4-rcp templates: the plugin, which carries the bnd launcher, on the runpath
+-runpath: org.gecko.bnd.eclipse.launcher.plugin;version=snapshot
+-runbundles: \
+	org.apache.felix.scr;version='[2.3.0,3)',\
+	org.osgi.service.component;version='[1.5.0,2)',\
+	org.osgi.util.function;version='[1.2.0,2)',\
+	org.osgi.util.promise;version='[1.3.0,2)',\
+	org.eclipse.equinox.common;version='[3.21.0,4)',\
+	org.eclipse.equinox.registry;version='[3.12.600,4)',\
+	org.eclipse.equinox.app;version='[1.7.600,2)',\
+	org.gecko.eclipse.api;version=snapshot,\
+	org.gecko.eclipse.compatibility.equinox.config;version=snapshot,\
+	org.gecko.eclipse.compatibility;version=snapshot,\
+	${smoke.app};version=file
+
+# The pre-launcher as built by this workspace (the plugin jar embeds it, the test classes do not)
+-preLauncher: ${workspace}/org.gecko.bnd.eclipse.launcher.pre/generated/org.gecko.bnd.eclipse.launcher.pre.jar
+
+-runprogramargs: -consoleLog
+-runvm: -Dsmoke.marker=${smoke.marker}
+-runproperties: eclipse.application=org.gecko.bnd.eclipse.launcher.smoke.application

@@ -27,3 +27,11 @@ configure(subprojects.findAll { it.name != 'cnf' }) {
         testImplementation 'org.assertj:assertj-core:3.27.7'
     }
 }
+
+// EclipseStyleLaunchSmokeTest starts a product whose -runpath is the launcher plugin jar of this
+// project, as in a real bndrun: build it before the tests run.
+project(':org.gecko.bnd.eclipse.launcher') {
+    tasks.named('test') {
+        dependsOn tasks.named('jar')
+    }
+}

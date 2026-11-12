@@ -1,0 +1,3 @@
+# Used by EclipseStyleLaunchSmokeTest: a headless product that is exported and started.
+-include: smoke_base.bndrun
+-runsystemcapabilities: ${native_capability;osname=Linux;osversion=3.14;processor=x86_64}
